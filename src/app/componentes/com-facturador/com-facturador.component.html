@@ -1,0 +1,34 @@
+<div>
+
+    <mat-form-field>
+        <mat-label>Tipo Comprobante</mat-label>
+        <mat-select (selectionChange)="selectComprobante($event)">
+            <mat-option *ngFor="let item of listTipoComprobante; let i=index;" [value]="i">{{item.descripcion}}</mat-option>          
+        </mat-select>
+      </mat-form-field>
+      
+
+    <mat-form-field class="w-100 fs-12">
+        <input matInput placeholder="DNI / RUC" type="number"  #dni maxlength="11" (keyup)="verificarDocumento(dni.value)" (keydown.enter)="buscarDNI(dni.value)" [(ngModel)]="num_documento">
+        <button mat-flat-button color="primary" matSuffix (click)="buscarDNI(dni.value)">            
+            <i class="fa fa-search" aria-hidden="true"></i>                        
+        </button>
+    </mat-form-field>
+    <div class="w-100">
+        <mat-progress-bar style="bottom: 20px;" [hidden]="!loadConsulta" mode="indeterminate"></mat-progress-bar>
+        <span class="fs-13 text-danger">{{msj_error}}</span>                    
+    </div>
+
+    <mat-form-field class="w-100">
+        <input matInput placeholder="Nombre" type="text" [(ngModel)]="datosConsulta.nombres">
+    </mat-form-field>
+    <mat-form-field class="w-100">
+        <input matInput placeholder="Direccion" type="text" [(ngModel)]="datosConsulta.direrccion">
+    </mat-form-field>
+
+    <!-- <button [disabled]="!loadConsulta && !isValidAll" (click)="emitirFacturar()">Emitir factura</button> -->
+    <div class="text-center">
+        <button mat-flat-button class="pr-2" (click)="atras()"> <i class="fa fa-arrow-left"></i> Atras</button>
+        <button mat-flat-button color="primary" [disabled]="!loadConsulta && !isValidAll" (click)="emitirFacturar()"> Emitir factura </button>
+    </div>
+</div>

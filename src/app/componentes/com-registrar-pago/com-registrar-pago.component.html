@@ -1,0 +1,25 @@
+<div class="w-100 d-flex justify-content-between align-items-center">
+
+    <div>
+        <ng-container *ngIf="!isRegistrarCuenta; else elseTemplate">
+            <span class="fw-600 text-success">Orden pagada, cliente pago con tarjeta. </span>
+        </ng-container>
+        <ng-template #elseTemplate>        
+            <mat-radio-group aria-label="Select an option" class="example-radio-group" [(ngModel)]="idTipoPagoSelected">
+                <mat-radio-button class="ml-2" value="{{item.idtipo_pago}}" *ngFor="let item of listTipoPago">{{ item.descripcion }}</mat-radio-button>            
+            </mat-radio-group>
+        </ng-template>
+        
+    </div>
+    
+    <div class="text-right">
+        <h4>S/. {{importeTotal}}</h4>
+                
+        <button mat-flat-button color="primary"
+                    [disabled]="!idTipoPagoSelected"
+                    (click)="registrarPago()">
+                    <i class="fa fa-spinner fa-spin" *ngIf="loader"></i>
+                    Registrar
+                </button>
+    </div>
+</div>
