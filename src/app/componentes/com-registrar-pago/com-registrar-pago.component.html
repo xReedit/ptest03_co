@@ -16,7 +16,7 @@
         <h4>S/. {{importeTotal}}</h4>
                 
         <button mat-flat-button color="primary"
-                    [disabled]="!idTipoPagoSelected"
+                    [disabled]="!idTipoPagoSelected || loader"
                     (click)="registrarPago()">
                     <i class="fa fa-spinner fa-spin" *ngIf="loader"></i>
                     Registrar

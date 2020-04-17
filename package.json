@@ -44,6 +44,7 @@
     "@angular/compiler-cli": "~9.1.0",
     "@angular/language-service": "~9.1.0",
     "@types/googlemaps": "^3.39.3",
+    "@types/isotope-layout": "^3.0.8",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",

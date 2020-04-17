@@ -228,22 +228,22 @@ export class SocketService {
 
   // datos de la sede, impresoras
   // load reglas de la carta y subtotales
-  onGetDatosSede() {
-    return new Observable(observer => {
-      this.socket.on('getDataSede', (res: any) => {
-        observer.next(res);
-      });
-    });
-  }
+  // onGetDatosSede() {
+  //   return new Observable(observer => {
+  //     this.socket.on('getDataSede', (res: any) => {
+  //       observer.next(res);
+  //     });
+  //   });
+  // }
 
-  // respuesta de hacer un nuevo pedido
-  onGetNuevoPedido() {
-    return new Observable(observer => {
-      this.socket.on('nuevoPedido', (res: any) => {
-        observer.next(res);
-      });
-    });
-  }
+  // // respuesta de hacer un nuevo pedido
+  // onGetNuevoPedido() {
+  //   return new Observable(observer => {
+  //     this.socket.on('nuevoPedido', (res: any) => {
+  //       observer.next(res);
+  //     });
+  //   });
+  // }
 
   // cuando el cliente paga el pedido
   onPedidoPagado() {
@@ -272,18 +272,32 @@ export class SocketService {
     });
   }
 
-  // onGetDatosSede() {
-  //   return this.listen('getDataSede');
-  // }
 
-  // onListenSocketDisconnet() {
-  //   return new Observable(observer => {
-  //     this.socket.on('disconnect', (res: any) => {
-  //       this.isSocketOpen = false;
-  //       this.isSocketOpenSource.next(false);
-  //     });
-  //   });
-  // }
+
+
+  ///// comercio ///// comercio
+  ///// comercio ///// comercio
+
+  onGetDatosSede() {
+    return new Observable(observer => {
+      this.socket.on('getDataSede', (res: any) => {
+        observer.next(res);
+      });
+    });
+  }
+
+  // respuesta de hacer un nuevo pedido
+  onGetNuevoPedido() {
+    return new Observable(observer => {
+      this.socket.on('nuevoPedido', (res: any) => {
+        observer.next(res);
+      });
+    });
+  }
+
+  ///// comercio ///// comercio
+  ///// comercio ///// comercio
+
 
   emit(evento: string, data: any) {
     // verificar estado del socket

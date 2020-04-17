@@ -18,4 +18,10 @@ export class DialogOrdenDetalleComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  cerrarDialog(val: boolean) {
+    if ( val ) {
+      this.dialogRef.close(this.laOrden);
+    }
+  }
+
 }

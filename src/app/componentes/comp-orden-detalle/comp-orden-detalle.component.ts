@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PedidoComercioService } from 'src/app/shared/services/pedido-comercio.service';
 import { PedidoModel } from 'src/app/modelos/pedido.model';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
@@ -11,6 +11,7 @@ import { ComercioService } from 'src/app/shared/services/comercio.service';
 export class CompOrdenDetalleComponent implements OnInit {
 
   @Input() orden: any;
+  @Output() closeWindow = new EventEmitter<boolean>(false); // manda cerrar el dialog
 
   isTieneRepartidor = false;
   isRepartidoresPropios = false;
@@ -23,6 +24,10 @@ export class CompOrdenDetalleComponent implements OnInit {
   isRepartidorPaga = true; // si el repartidor va a pagar o ya el pedido esta pagado
   descripcionComoPagaRepartidor = '';
   _tabIndex = 0; // 0 todo el pedido 1 facturacion 2 registro de pago
+
+  // si tiene habilitado facturacion
+  isFacturacionActivo = false;
+
   constructor(
     private pedidoComercioService: PedidoComercioService,
     private comercioService: ComercioService
@@ -37,6 +42,7 @@ export class CompOrdenDetalleComponent implements OnInit {
     // si es diferente de tarjeta entonces el repartidor si paga
     this.isRepartidorPaga = this.orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago !== 2;
     this.descripcionComoPagaRepartidor = this.isRepartidorPaga ? 'El Repartidor tiene que pagar el pedido' : 'Pedido pagado. Repartidor NO paga.';
+    this.isFacturacionActivo = this.comercioService.getSedeInfo().facturacion_e_activo === 1;
 
     // this.xCargarDatosAEstructuraImpresion(this.orden.json_datos_delivery.p_body);
 
@@ -53,12 +59,31 @@ export class CompOrdenDetalleComponent implements OnInit {
     this.loaderEstado = true;
     const getEstado = this.pedidoComercioService.setEstadoPedido(this.orden.idpedido, this.orden.pwa_estado);
     this.btnActionTitule = getEstado.btnTitulo;
-    this.orden.pwa_estado = getEstado.idpedido;
+    this.orden.pwa_estado = getEstado.estado;
     this.orden.estadoTitle = getEstado.estadoTitle;
 
     setTimeout(() => {
       this.loaderEstado = false;
+      this.goFinalizarPedido();
     }, 1000);
+  }
+
+  // cuando esta en "entregar al repartidor"
+  // pasa de frente a registrar pago del repartidor
+  // si quiere facturar siempre va estar activo el boton facturar
+  private goFinalizarPedido() {
+    switch (this.orden.pwa_estado) {
+      case 'R':
+        this._tabIndex = 2; // a registrar
+        break;
+      case 'A':
+        this.closeWindow.emit(true); // manda cerrar dialog
+        break;
+      case 'D':
+        this.orden.quitar = true;
+        this.closeWindow.emit(true); // manda cerrar dialog
+        break;
+    }
   }
 
   onChangeFacturador($event) {
@@ -71,50 +96,11 @@ export class CompOrdenDetalleComponent implements OnInit {
     this.showFacturar = true;
   }
 
-  // clickTab($event: any) {
-  //   console.log('$event.index', $event.index);
-  //   this._tabIndex = $event.index;
-  // }
 
+  cerrarDetalles(val: boolean) {
+    if ( val ) {
+      this.closeWindow.emit(val);
+    }
+  }
 
-  // xCargarDatosAEstructuraImpresion (pedido: PedidoModel): any {
-  //   // var _arrEstructura = xm_log_get('estructura_pedido'); // get estructura_pedido
-  //   let _arrRpt = [];
-
-  //   // enumero los id desde segun el idtipoconsumo
-  //   // _arrEstructura.forEach(element => {
-  //   //     _arrRpt[element.idtipo_consumo]=element
-  //   // });
-
-  //   pedido.tipoconsumo.map((element: any) => {
-  //     _arrRpt[0] = element;
-  //     _arrRpt[0].des = 'Orden';
-  //     _arrRpt[0].titulo = 'Orden';
-  //   });
-
-  //   const _SubItems = [];
-  //   pedido.tipoconsumo.map(x => {
-  //     x.secciones.map(s => s.items.map(i => _SubItems.push(i)));
-  //   });
-
-  //   const idtipoconsumo = _arrRpt[0].idtipo_consumo;
-
-  //   // _arrRpt=_arrEstructura.slice();
-  //   _arrRpt = JSON.parse(JSON.stringify(_arrRpt).replace(/descripcion/g, 'des'));
-
-  //   _SubItems.map((element: any, i: number) => {
-  //     if ( !element.visible ) {return; }
-  //     element.id = element.iditem;
-  //     element.des_seccion = element.seccion;
-  //     element.punitario = element.precio_unitario;
-  //     element.cantidad = element.cantidad_seleccionada;
-  //     element.idtipo_consumo = 0;
-  //     // element.visible = 1;
-  //     _arrRpt[0][i] = element;
-  //   });
-
-  //   return _arrRpt;
-  //   // console.log('_arrRpt', _arrRpt);
-
-  // }
 }

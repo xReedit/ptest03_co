@@ -10,6 +10,7 @@ import { RecepcionComponent } from './recepcion/recepcion.component';
 import { SeguimientoComponent } from './seguimiento/seguimiento.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OrdenesComponent } from './ordenes/ordenes.component';
+
 import { NgxMasonryModule } from 'ngx-masonry';
 
 @NgModule({

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
 import { MetodoPagoModel } from 'src/app/modelos/metodo.pago.model';
 import { CrudHttpService } from 'src/app/shared/services/crud-http.service';
@@ -11,6 +11,8 @@ import { CrudHttpService } from 'src/app/shared/services/crud-http.service';
 export class ComRegistrarPagoComponent implements OnInit {
 
   @Input() orden: any;
+  @Output() closeWindow = new EventEmitter<boolean>(false); // manda cerrar el dialog
+
   metodoPagoCliente: MetodoPagoModel;
   importeTotal: string;
   idTipoPagoSelected = null;
@@ -59,6 +61,9 @@ export class ComRegistrarPagoComponent implements OnInit {
 
         setTimeout(() => {
           this.loader = false;
+
+          this.orden.quitar = true;
+          this.closeWindow.emit(true); // cerrar ventana
         }, 500);
       });
 

@@ -47,6 +47,19 @@ export class ComercioService {
     });
   }
 
+  loadOrdenenById(_idpedido: number) {
+    return new Observable(observer => {
+    const _dataSend = {idpedido: _idpedido};
+    this.crudService.postFree(_dataSend, 'comercio', 'get-pedido-by-id')
+      .subscribe((res: any) => {
+        // console.log(res);
+        const response = res.data[0];
+        response.json_datos_delivery = JSON.parse(response.json_datos_delivery);
+        observer.next(response);
+      });
+    });
+  }
+
   // carga los datos de impresion
   loadDatosImpresion() {
       this.crudService.getAll('comercio', 'get-datos-impresion', false, false, true)
