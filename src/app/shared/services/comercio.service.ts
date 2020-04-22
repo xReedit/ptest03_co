@@ -37,9 +37,11 @@ export class ComercioService {
     .subscribe(res => console.log(res));
   }
 
-  loadOrdenesPendientes() {
+  loadOrdenesPendientes(_filtro: string) {
+    const _dataFiltro = { filtro: _filtro };
+    console.log(_dataFiltro);
     return new Observable(observer => {
-    this.crudService.getAll('comercio', 'get-pedidos-pendientes', false, false, true)
+    this.crudService.postFree(_dataFiltro, 'comercio', 'get-pedidos-pendientes')
       .subscribe((res: any) => {
         // console.log(res);
         observer.next(res.data);
@@ -78,5 +80,15 @@ export class ComercioService {
         this.sedeInfo.datos_tipo_pago = res.data;
         this.setSedeInfo();
       });
+  }
+
+  // carga los repartidores del comercio
+  loadRepartidoresComercio() {
+    return new Observable(observer => {
+    this.crudService.getAll('comercio', 'get-comercio-repartidor', false, false, true)
+      .subscribe((res: any) => {
+        observer.next(res.data);
+      });
+    });
   }
 }

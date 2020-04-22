@@ -1,100 +1,160 @@
-<div class="animated fadeInDown">
-    <div class="p-3 bg-dark text-white fs-13 d-flex justify-content-between">
-        <div>
-            <span>Pedidos pendientes</span>
+<mat-drawer-container class="example-container">
+    <mat-drawer #drawer class="example-sidenav" mode="over" position="end" [opened]="showPanelRigth" (closedStart)="showPanelRigth=false">
+        <div style="max-width: 350px;">
+            <div class="p-3" *ngIf="listResumenAll">
+                <span class="fw-600"><i class="fa fa-arrow-left pr-2" (click)="drawer.toggle()"></i> Resumen de pedidos ({{ cantidadOrdenes | number : '2.' }})</span>
+            </div>      
+            <div class="p-3">
+                <app-com-resumen-all-pedidos [listResumen]="listResumenAll"></app-com-resumen-all-pedidos>
+            </div>
         </div>
-        <div>
-            <span>Resumen</span>
+
+    </mat-drawer>
+
+
+
+  
+
+    <div class="animated fadeInDown xh-body-odenen">
+        <div class="p-3 bg-dark text-white fs-13 d-flex justify-content-between">
+            <div>
+                <span 
+                    class="btn-link-2 pr-2" 
+                    [ngClass]="{'active': option.checked}"
+                    (click)="filterList(option)"
+                    *ngFor="let option of listBtnToolbar">{{ option.descripcion }}</span>            
+            </div>
+            <div>
+                <span (click)="resumenOrdenesPendientes()">Resumen</span>
+            </div>
+        </div>
+
+        <!-- body -->
+        <div class="p-3" *ngIf="showVistaLista">
+        
+            <!-- vista ordenes -->
+
+            <ngx-masonry [options]="{ horizontalOrder: true, updateLayout: true, transitionDuration: '0' }"> 
+                <div 
+                    ngxMasonryItem class="card-orden animated"  
+                    *ngFor="let item of listOrdenes; let i=index;"
+                    [ngClass]="{'quitar-orden': item.quitar, 'fadeInUp': item.new}"
+                    >
+                    <!-- <button (click)="quitarOrden(item)">quitar orden</button>                 -->
+                    <div class="c-header fs-13 p-3 border-bottom"
+                        [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r'}"
+                        (click)="openDialogOrden(item)"
+                    >
+                        <div class="text-left">
+                            <p class="fw-600">#{{item.idpedido}}</p>
+                            <p class="fs-12">
+                                <ng-container *ngIf="item.isTieneRepartidor; else elseTemplate">
+                                    Asignado
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                    <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplate">
+                                        No asignado
+                                    </ng-container>
+                                    <ng-template #elseTemplate>
+                                        Repartidor...
+                                    </ng-template>                                                                    
+                                </ng-template>
+                                
+                            </p>
+                        </div>
+                        <div class="text-center">
+                            <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="fw-600">{{ item.tiempo }}</p>
+                            <p class="fs-12">{{ item.estadoTitle }}</p>
+                        </div>
+                    </div>                
+
+                    
+
+                    <div class="c-body border-bottom p-3 fs-12">
+                        <div>
+                            <p class="d-inline-block text-truncate w-100">Cliente: <strong>{{item.json_datos_delivery.p_header.arrDatosDelivery.nombre}}</strong></p>
+                            <span class="d-inline-block text-truncate w-100">{{ item.json_datos_delivery.p_header.arrDatosDelivery.direccion }}</span>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <app-com-resumen-pedido [elPedido]="item.json_datos_delivery.p_body"></app-com-resumen-pedido>
+                    </div>
+
+                </div>
+            </ngx-masonry>
+        </div>
+
+
+        <!-- vista mapa -->
+        <div *ngIf="!showVistaLista">
+            <div class="d-flex content-body-mapa">
+                <!-- lista de ordenes -->
+                <div class="xw-220 border-right p-3">
+                    
+                    
+                    <ngx-masonry [options]="{ horizontalOrder: true, updateLayout: true, transitionDuration: '0' }"> 
+                        <div 
+                            ngxMasonryItem class="card-orden xw-50 animated"  
+                            *ngFor="let item of listOrdenes; let i=index;"
+                            [ngClass]="{'quitar-orden': item.quitar, 'fadeInUp': item.new}"
+                            >
+                            <div class="c-header fs-13 p-3 border-bottom"
+                                [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r'}"
+                                (click)="openDialogOrden(item)"
+                            >
+
+                                <div class="text-center">
+                                    <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
+                                </div>
+                                <div class="text-left">
+                                    <p class="fw-600">#{{item.idpedido}}</p>
+                                    <p class="fs-12">
+                                        <ng-container *ngIf="item.isTieneRepartidor; else elseTemplate">
+                                            Asignado
+                                        </ng-container>
+                                        <ng-template #elseTemplate>
+                                            <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplate">
+                                                No asignado
+                                            </ng-container>
+                                            <ng-template #elseTemplate>
+                                                Repartidor...
+                                            </ng-template>                                                                    
+                                        </ng-template>
+                                        
+                                    </p>
+                                </div>                                
+                                <div class="text-right">
+                                    <p class="fw-600">{{ item.tiempo }}</p>
+                                    <p class="fs-12">{{ item.estadoTitle }}</p>
+                                </div>
+                            </div>                
+        
+                            
+        
+                            <div class="c-body border-bottom p-3 fs-11">
+                                <div>
+                                    <p class="d-inline-block text-truncate w-100">Cliente: <strong>{{item.json_datos_delivery.p_header.arrDatosDelivery.nombre}}</strong></p>
+                                    <span class="d-inline-block text-truncate w-100">{{ item.json_datos_delivery.p_header.arrDatosDelivery.direccion }}</span>
+                                </div>
+                            </div>        
+        
+                        </div>
+                    </ngx-masonry>
+
+
+                </div>
+            
+                <!-- mapa -->
+                <div class="w-100 h-100">
+                    <app-mapa-ordenes [listaPedidos]="listOrdenes" (pedidoOpen)="openDialogOrden($event)"></app-mapa-ordenes>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- body -->
-    <div class="p-3">
-    
-        <ngx-masonry [options]="{ horizontalOrder: true, updateLayout: true, transitionDuration: '0' }"> 
-            <div 
-                ngxMasonryItem class="card-orden animated"  
-                *ngFor="let item of listOrdenes; let i=index;"
-                [ngClass]="{'quitar-orden': item.quitar, 'fadeInUp': item.new}"
-                >
-                <!-- <button (click)="quitarOrden(item)">quitar orden</button>                 -->
-                <div class="c-header fs-13 p-3 border-bottom"
-                    [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r'}"
-                    (click)="openDialogOrden(item)"
-                >
-                    <div class="text-left">
-                        <p class="fw-600">#{{item.idpedido}}</p>
-                        <p class="fs-12">No asignado</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="fw-600">{{ item.tiempo }}</p>
-                        <p class="fs-12">{{ item.estadoTitle }}</p>
-                    </div>
-                </div>                
-
-                
-
-                <div class="c-body border-bottom p-3 fs-12">
-                    <div>
-                        <p class="d-inline-block text-truncate w-100">Cliente: <strong>{{item.json_datos_delivery.p_header.arrDatosDelivery.nombre}}</strong></p>
-                        <span class="d-inline-block text-truncate w-100">{{ item.json_datos_delivery.p_header.arrDatosDelivery.direccion }}</span>
-                    </div>
-                </div>
-
-                
-                <div>
-                    <app-com-resumen-pedido [elPedido]="item.json_datos_delivery.p_body"></app-com-resumen-pedido>
-                </div>
-
-            </div>
-        </ngx-masonry>
-
-
-        <!-- istope -->
-
-        <!-- <div class="xgrid"> 
-            <div
-                class="card-orden"  
-                *ngFor="let item of listOrdenes; let i=index;"
-                [ngClass]="{'quitar-orden': item.quitar}"
-                >
-                <button (click)="quitarOrden(item)">quitar orden</button>                
-                <div class="c-header fs-13 p-3 border-bottom"
-                    [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r'}"
-                    (click)="openDialogOrden(item)"
-                >
-                    <div class="text-left">
-                        <p class="fw-600">#{{item.idpedido}}</p>
-                        <p class="fs-12">No asignado</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="fw-600">{{ item.tiempo }}</p>
-                        <p class="fs-12">{{ item.estadoTitle }}</p>
-                    </div>
-                </div>                
-
-                
-
-                <div class="c-body border-bottom p-3 fs-12">
-                    <div>
-                        <p class="d-inline-block text-truncate w-100">Cliente: <strong>{{item.json_datos_delivery.p_header.arrDatosDelivery.nombre}}</strong></p>
-                        <span class="d-inline-block text-truncate w-100">{{ item.json_datos_delivery.p_header.arrDatosDelivery.direccion }}</span>
-                    </div>
-                </div>
-
-                
-                <div>
-                    <app-com-resumen-pedido [elPedido]="item.json_datos_delivery.p_body"></app-com-resumen-pedido>
-                </div>
-
-            </div>
-        </div> -->
-
-    </div>
-</div>
+</mat-drawer-container>

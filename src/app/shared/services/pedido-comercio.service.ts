@@ -121,4 +121,13 @@ export class PedidoComercioService {
     return arrTotales.filter(x => x.id !== -2 && x.id !== -3);
   }
 
+
+  setRepartidorToPedido(_idrepartidor: number, _pedido: any): void {
+    const _dataSend = { idrepartidor: _idrepartidor, idpedido: _pedido.idpedido };
+    this.crudService.postFree(_dataSend, 'comercio', 'set-repartidor-to-pedido')
+    .subscribe(res => {
+      console.log(res);
+    });
+  }
+
 }

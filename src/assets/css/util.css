@@ -357,6 +357,18 @@ p, span, div {
   font-weight: 600;
 }
 
+.btn-link-2:hover {
+	text-decoration: none;
+	color: gold;
+	cursor: pointer;
+}
+
+.btn-link-2.active {
+	text-decoration: none;
+	color: gold;
+	font-weight: 600;
+}
+
 /*MEDIA SCREEN*/
 /*MEDIA SCREEN*/
 .hidden-mobile {

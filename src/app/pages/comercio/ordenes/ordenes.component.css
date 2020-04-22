@@ -1,3 +1,13 @@
+.xh-body-odenen {
+    height: calc(100vh - 58px);
+}
+
+.content-body-mapa {
+    /* margin-top: 56px; */
+    height: calc(100vh - 110px);
+    overflow: auto;
+}
+
 .masonry-item { 
     width: 200px; 
     /* height: 300px;  */
@@ -16,6 +26,14 @@
     background: #eeeeee;
     filter: drop-shadow(1px 1px 2px #444);
     transition: ease-in all 0.3s;
+}
+
+.card-orden.xw-50 {
+    width: 220px;
+}
+
+.xw-220{
+    width: 310px;
 }
 
 .card-orden.quitar-orden {
@@ -44,4 +62,3 @@
 
 .c-header p{ margin: 0px;}
 .c-body p{ margin: 0px;}
-

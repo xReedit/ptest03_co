@@ -4,6 +4,7 @@ import { MainComponent } from './main/main.component';
 import { OrdenesComponent } from './ordenes/ordenes.component';
 import { SeguimientoComponent } from './seguimiento/seguimiento.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { OrdenesEnMapaComponent } from './ordenes-en-mapa/ordenes-en-mapa.component';
 
 
 const routes: Routes = [{
@@ -14,7 +15,7 @@ const routes: Routes = [{
             path: '', redirectTo: 'ordenes'
         },
         {
-            path: 'ordenes',
+            path: 'ordenes/:id',
             component: OrdenesComponent,
             data: { titulo: 'Ordenes' }
         },

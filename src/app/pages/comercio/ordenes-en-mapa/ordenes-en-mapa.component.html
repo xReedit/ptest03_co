@@ -1,0 +1,29 @@
+<div class="animated fadeInDown">
+
+    <div class="p-3 bg-dark text-white fs-13 d-flex justify-content-between">
+        <div>
+            <span 
+                class="btn-link-2 pr-2" 
+                [ngClass]="{'active': option.checked}"
+                (click)="filterList(option)"
+                *ngFor="let option of listBtnToolbar">{{ option.descripcion }}</span>            
+        </div>
+        <div>
+            <span (click)="resumenOrdenesPendientes()">Resumen</span>
+        </div>
+    </div>
+
+
+    <!-- body -->
+    <div class="d-flex content-body">
+        <!-- lista de ordenes -->
+        <div class="w-10 border-right p-3">
+            listado
+        </div>
+    
+        <!-- mapa -->
+        <div class="w-100 h-100">
+            mapa
+        </div>
+    </div>
+</div>

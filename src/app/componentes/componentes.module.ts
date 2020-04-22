@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DatosDeliveryComponent } from './datos-delivery/datos-delivery.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MaterialModule } from '../core/material/material.module';
+import { GoogleMapsModule } from '@angular/google-maps';
 import { DebounceClickDirective } from '../shared/directivas/debounce-click.directive';
 import { EncuestaOpcionComponent } from './encuesta-opcion/encuesta-opcion.component';
 // import { DialogUbicacionComponent } from './dialog-ubicacion/dialog-ubicacion.component';
@@ -31,6 +32,8 @@ import { CompOrdenDetalleComponent } from './comp-orden-detalle/comp-orden-detal
 import { DialogOrdenDetalleComponent } from './dialog-orden-detalle/dialog-orden-detalle.component';
 import { ComFacturadorComponent } from './com-facturador/com-facturador.component';
 import { ComRegistrarPagoComponent } from './com-registrar-pago/com-registrar-pago.component';
+import { ComResumenAllPedidosComponent } from './com-resumen-all-pedidos/com-resumen-all-pedidos.component';
+import { MapaOrdenesComponent } from './mapa-ordenes/mapa-ordenes.component';
 // import { DialogSelectDireccionComponent } from './dialog-select-direccion/dialog-select-direccion.component';
 
 @NgModule({
@@ -60,6 +63,8 @@ import { ComRegistrarPagoComponent } from './com-registrar-pago/com-registrar-pa
     DialogOrdenDetalleComponent,
     ComFacturadorComponent,
     ComRegistrarPagoComponent,
+    ComResumenAllPedidosComponent,
+    MapaOrdenesComponent,
     // DialogSelectDireccionComponent,
     // DialogUbicacionComponent
   ],
@@ -68,6 +73,7 @@ import { ComRegistrarPagoComponent } from './com-registrar-pago/com-registrar-pa
     ReactiveFormsModule,
     FormsModule,
     MaterialModule,
+    GoogleMapsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyAknWQFyVH1RpR2OAL0vRTHTapaIpfKSqo',
       libraries: ['places']
@@ -96,7 +102,9 @@ import { ComRegistrarPagoComponent } from './com-registrar-pago/com-registrar-pa
     ComResumenPedidoComponent,
     CompOrdenDetalleComponent,
     DialogOrdenDetalleComponent,
-    ComFacturadorComponent
+    ComFacturadorComponent,
+    ComResumenAllPedidosComponent,
+    MapaOrdenesComponent
   ],
 
   // entryComponents: [

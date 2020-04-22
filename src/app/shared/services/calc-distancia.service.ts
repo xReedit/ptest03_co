@@ -3,7 +3,7 @@ import { DeliveryDireccionCliente } from 'src/app/modelos/delivery.direccion.cli
 import { DeliveryEstablecimiento } from 'src/app/modelos/delivery.establecimiento';
 import { GeoPositionModel } from 'src/app/modelos/geoposition.model';
 import {
-  insideCircle
+  insideCircle, distanceTo
 } from 'geolocation-utils';
 
 
@@ -82,6 +82,11 @@ export class CalcDistanciaService {
   // regla x km adicional
   private reglaKm() {
 
+  }
+
+
+  calcDistanciaDosPunto(_origin: any, _detination: any): number {
+    return distanceTo (_origin, _detination);
   }
 }
 

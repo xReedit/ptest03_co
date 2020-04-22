@@ -23,5 +23,7 @@ export class SedeInfoModel {
     authorization_api_comprobante: string;
     datos_impresion: any; // los datos de impresion / para facturacion electronica
     datos_tipo_pago: any;
+    latitude: number;
+    longitude: number;
 }
 

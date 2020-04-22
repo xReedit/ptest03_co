@@ -295,6 +295,14 @@ export class SocketService {
     });
   }
 
+  onGetPedidoAceptadoByReparidor() {
+    return new Observable(observer => {
+      this.socket.on('repartidor-notifica-a-comercio-pedido-aceptado', (res: any) => {
+        observer.next(res);
+      });
+    });
+  }
+
   ///// comercio ///// comercio
   ///// comercio ///// comercio
 

@@ -2,12 +2,23 @@
     <!-- encabezado -->
     <div class="d-flex justify-content-between">
         <div>
-            <p class="fw-600">Pedido #{{orden.idpedido}} | </p>
+            <p class="fw-600">Pedido #{{orden.idpedido}}</p>
             <div class="fs-13">
-                <p>Repartidor: {{ orden.repartidor || 'No asignado' }}</p>
-                <p class="text-success" [ngClass]="{'text-danger': isRepartidorPaga}">{{ descripcionComoPagaRepartidor }}</p>
+                <p><i class="fa fa-motorcycle" aria-hidden="true"></i> Repartidor: {{ nomRepartidor || 'No asignado' }}</p>
+                <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplateNoRepartidores">
+                    <mat-form-field>                        
+                        <mat-select [(value)]="repartidorSelected" (selectionChange)="saveRepartidor($event)">
+                          <mat-option *ngFor="let item of listRepartidoresPropios" [value]="item.idrepartidor">{{ item.nombre }}</mat-option>                          
+                        </mat-select>
+                      </mat-form-field>
+                </ng-container>
+                <ng-template #elseTemplateNoRepartidores>                                        
+                    <p *ngIf="nomRepartidor"><i class="fa fa-phone" aria-hidden="true"></i> {{ orden.telefono_repartidor }} </p>
+                    <p class="text-success" [ngClass]="{'text-danger': isRepartidorPaga}">{{ descripcionComoPagaRepartidor }}</p>                    
+                </ng-template>
+                
             </div>
-            <button *ngIf="!isTieneRepartidor && !isRepartidoresPropios">Buscar Repartidor</button>
+            <!-- <button *ngIf="!isTieneRepartidor && !isRepartidoresPropios">Buscar Repartidor</button> -->
         </div>
         <div>
             <!-- boton cerrar -->

@@ -1,0 +1,21 @@
+<div>
+    <div *ngFor="let seccion of listResumen">
+        <!-- seccion -->
+        <div class="mb-2">
+            <span class="fw-600">{{seccion.des}}</span>
+        </div>
+        <!-- items -->
+        <div *ngFor="let item of seccion.items" class="border-bottom">
+            <div class="d-flex w-100 justify-content-between fs-13">
+                <div>
+                    <span class="pr-1">{{ item.cantidad_seleccionada | number: '2.' }}</span>
+                    <span> {{ item.des }} </span>
+                </div>
+                <div>
+                    <span class="pr-2"> {{ item.precio_total | number: '.2' }}</span>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>    
+</div>

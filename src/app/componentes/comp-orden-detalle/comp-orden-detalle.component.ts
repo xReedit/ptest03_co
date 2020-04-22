@@ -22,11 +22,16 @@ export class CompOrdenDetalleComponent implements OnInit {
   isShowControlFacturador = false;
 
   isRepartidorPaga = true; // si el repartidor va a pagar o ya el pedido esta pagado
+  nomRepartidor = null;
   descripcionComoPagaRepartidor = '';
   _tabIndex = 0; // 0 todo el pedido 1 facturacion 2 registro de pago
 
   // si tiene habilitado facturacion
   isFacturacionActivo = false;
+  isComercioPropioRepartidor = false;
+
+  listRepartidoresPropios: any;
+  repartidorSelected;
 
   constructor(
     private pedidoComercioService: PedidoComercioService,
@@ -40,12 +45,28 @@ export class CompOrdenDetalleComponent implements OnInit {
     // this.isTieneRepartidor = this.orden.repartidor ? true : false;
 
     // si es diferente de tarjeta entonces el repartidor si paga
+    this.comercioService.getSedeInfo();
     this.isRepartidorPaga = this.orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago !== 2;
     this.descripcionComoPagaRepartidor = this.isRepartidorPaga ? 'El Repartidor tiene que pagar el pedido' : 'Pedido pagado. Repartidor NO paga.';
-    this.isFacturacionActivo = this.comercioService.getSedeInfo().facturacion_e_activo === 1;
+    this.isFacturacionActivo = this.comercioService.sedeInfo.facturacion_e_activo === 1;
 
+    this.nomRepartidor = this.orden.idrepartidor ? this.orden.nom_repartidor + ' ' + this.orden.ap_repartidor : null;
+    this.repartidorSelected = this.orden.idrepartidor;
+    this.isComercioPropioRepartidor = this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1;
+
+    // si tiene repartidores propios
+    if ( this.isComercioPropioRepartidor ) {
+      this.getRepartidoresComercio();
+    }
     // this.xCargarDatosAEstructuraImpresion(this.orden.json_datos_delivery.p_body);
 
+  }
+
+  private getRepartidoresComercio(): void {
+    this.comercioService.loadRepartidoresComercio()
+      .subscribe(res => {
+        this.listRepartidoresPropios = res;
+      });
   }
 
   private getEstadoPedido(): void {
@@ -94,6 +115,19 @@ export class CompOrdenDetalleComponent implements OnInit {
 
   goFacturar() {
     this.showFacturar = true;
+  }
+
+
+  saveRepartidor($event): void {
+    const indexR = $event.value;
+    const _repartidor = this.listRepartidoresPropios.filter(r => r.idrepartidor === indexR)[0];
+    this.orden.idrepartidor = _repartidor.idrepartidor;
+    this.orden.nom_repartidor = _repartidor.nombre;
+    this.orden.ap_repartidor = _repartidor.apellido;
+    this.orden.telefono_repartidor = _repartidor.telefono;
+
+    this.pedidoComercioService.setRepartidorToPedido(indexR, this.orden);
+
   }
 
 

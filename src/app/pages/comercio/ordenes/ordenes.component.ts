@@ -8,7 +8,11 @@ import { NgxMasonryComponent, NgxMasonryOptions  } from 'ngx-masonry';
 import { SocketService } from 'src/app/shared/services/socket.service';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs/internal/Subject';
-import { style, animate } from '@angular/animations';
+
+import { TipoConsumoModel } from 'src/app/modelos/tipoconsumo.model';
+import { SeccionModel } from 'src/app/modelos/seccion.model';
+import { ActivatedRoute } from '@angular/router';
+
 // import * as Isotope from 'isotope-layout';
 // // declare var Isotope: any;
 
@@ -19,29 +23,50 @@ import { style, animate } from '@angular/animations';
 })
 export class OrdenesComponent implements OnInit, OnDestroy {
   listOrdenes: any;
+  listResumenAll: any; // listado de resumen de todos los pedidos
+  cantidadOrdenes = 0; // cantidad de pedidos en vista
   timerRun: any;
   timepoMax = 10;
   timepoMedio = this.timepoMax / 2;
 
+  showPanelRigth = false;
+
+  showVistaLista = true;
+
   @ViewChild(NgxMasonryComponent) masonry: NgxMasonryComponent;
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
-  // public myOptions: NgxMasonryOptions = {
-  //   horizontalOrder: true
-  // };
-      animations = {};
+
+  // botones del toolbar
+  listBtnToolbar = [];
+
+  isComercioPropioRepartidor = false;
 
   constructor(
     private comercioService: ComercioService,
     private pedidoComercioService: PedidoComercioService,
     private utilService: UtilitariosService,
     private dialog: MatDialog,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.xloadOrdenesPendientes();
+
+    this.activatedRoute.params.subscribe(params => {
+      const id = params['id'];
+      this.showVistaLista = id === 'lista';
+      });
+
+    this.xloadOrdenesPendientes(`'P', 'A'`);
     this.listenSocket();
+    this.comercioService.getSedeInfo();
+    this.isComercioPropioRepartidor = this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1;
+
+
+    this.listBtnToolbar.push({descripcion: 'Pendientes', checked: true, filtro: `'P', 'A'`});
+    this.listBtnToolbar.push({descripcion: ' Listos ', checked: false, filtro: `'D'`});
+    this.listBtnToolbar.push({descripcion: ' Entregados ', checked: false, filtro: `'R'` });
   }
 
   ngOnDestroy(): void {
@@ -60,16 +85,36 @@ export class OrdenesComponent implements OnInit, OnDestroy {
         .subscribe((getOrden: any) => {
           getOrden.new = true;
           this.listOrdenes.push(getOrden);
+
+          this.masonry.reloadItems();
           this.masonry.layout();
         });
     });
+
+
+    this.socketService.onGetPedidoAceptadoByReparidor()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((data: any) => {
+      // buscar en la lista al pedido
+
+      const _pedidoFind = this.findListaOrdenById(data.idpedido);
+      _pedidoFind.nom_repartidor = data.nombre;
+      _pedidoFind.ap_repartidor = data.apellido;
+      _pedidoFind.idrepartidor = data.idrepartidor;
+      _pedidoFind.isTieneRepartidor = true;
+      _pedidoFind.telefono_repartidor = data.telefono;
+
+      console.log('pedido aceptado', data);
+    });
   }
 
-  private xloadOrdenesPendientes(): void {
-    this.comercioService.loadOrdenesPendientes()
+  private xloadOrdenesPendientes(fitro: string): void {
+    this.comercioService.loadOrdenesPendientes(fitro)
     .subscribe((res: any) => {
       console.log(res);
       this.listOrdenes = res;
+
+      this.cantidadOrdenes = this.listOrdenes.length;
 
       this.darFormatoOrden();
 
@@ -82,8 +127,11 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       z.json_datos_delivery = JSON.parse(z.json_datos_delivery);
       z.estadoTitle = this.pedidoComercioService.getEstadoPedido(z.pwa_estado).estadoTitle;
       z.json_datos_delivery.p_subtotales = this.pedidoComercioService.darFormatoSubTotales(z.json_datos_delivery.p_subtotales);
+      z.visible = true;
+      z.isTieneRepartidor = z.idrepartidor ? true : false;
       return z;
     });
+
   }
 
   private initTimerOrdenes(): void {
@@ -130,6 +178,50 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       this.masonry.reloadItems();
       this.masonry.layout();
     }, 500);
+  }
+
+  filterList(opcion: any) {
+    this.listBtnToolbar.map(x => x.checked = false);
+    opcion.checked = true;
+    this.filtrarOrdenes(opcion);
+  }
+
+  private filtrarOrdenes(opcion: any) {
+    console.log('opcion.filtro', opcion.filtro);
+    this.xloadOrdenesPendientes(opcion.filtro);
+  }
+
+  resumenOrdenesPendientes() {
+    this.listResumenAll = [];
+    this.listOrdenes.map(o => {
+      o.json_datos_delivery.p_body.tipoconsumo.map((c: TipoConsumoModel) => {
+        c.secciones.map((s: SeccionModel) => {
+          let _secResumen = <SeccionModel>this.listResumenAll.filter((r: SeccionModel) => r.idseccion === s.idseccion)[0];
+          if ( !_secResumen ) {
+            _secResumen = JSON.parse(JSON.stringify(s));
+            _secResumen.items = [];
+            this.listResumenAll.push(_secResumen);
+          }
+          s.items.map(i => {
+            let _itemResumen = _secResumen.items.filter(ri => ri.iditem === i.iditem)[0];
+            if ( _itemResumen ) {
+              _itemResumen.cantidad_seleccionada += i.cantidad_seleccionada;
+            } else {
+              _itemResumen = JSON.parse(JSON.stringify(i));
+              _secResumen.items.push(_itemResumen);
+            }
+          });
+        });
+      });
+    });
+
+    this.showPanelRigth = true;
+    console.log('listResumen', this.listResumenAll);
+  }
+
+  // buscar orden en lista
+  findListaOrdenById(idpedido: number): any {
+    return this.listOrdenes.filter(o => o.idpedido === idpedido).map(x => x);
   }
 
 }
