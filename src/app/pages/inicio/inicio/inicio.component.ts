@@ -19,6 +19,8 @@ export class InicioComponent implements OnInit, OnDestroy {
   isLogin = false;
   nombreClientSocket = '';
 
+  shouViewOption = 0;
+
   constructor(
     private verifyClientService: VerifyAuthClientService,
     private router: Router,

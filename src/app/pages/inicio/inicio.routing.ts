@@ -10,6 +10,7 @@ import { CallbackAuthComponent } from './callback-auth/callback-auth.component';
 import { CodigoQrGuard } from 'src/app/shared/guards/codigo-qr.guard';
 import { LoginClienteComponent } from './login-cliente/login-cliente.component';
 import { SeleccionarUbicacionDeliveryComponent } from './seleccionar-ubicacion-delivery/seleccionar-ubicacion-delivery.component';
+import { RegistroComercioComponent } from './registro-comercio/registro-comercio.component';
 
 const routes: Routes = [{
     path: '', component: MainComponent,
@@ -27,6 +28,11 @@ const routes: Routes = [{
             path: 'login-personal-autorizado',
             component: LoginPersonalAutorizadoComponent,
             data: { titulo: 'Login Personal Autorizado' }
+        },
+        {
+            path: 'registro-comercio',
+            component: RegistroComercioComponent,
+            data: { titulo: 'Registrar Comercio' }
         },
         {
             path: 'lector-qr',

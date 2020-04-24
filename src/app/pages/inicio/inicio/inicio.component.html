@@ -19,10 +19,10 @@
             <p class="fw-600 fs-16">Te ayudamos a conectar personas con tus servicios.</p>
           </div>
         </div>
-        <div class="part-2 text-center d-flex justify-content-center align-items-center">
+        <div class="part-2 text-center d-flex justify-content-center align-items-center overflow-auto" [ngClass]="{'align-items-baseline': shouViewOption===2}">
 
           <div>
-            <div class="inner-header flex">
+            <div class="">
               <br>
               <div>      
                 <img src="assets/images/papaya_text-2.png" width="190px">
@@ -30,7 +30,28 @@
               </div>
             </div>
             
-            <app-login-personal-autorizado></app-login-personal-autorizado>          
+            <!-- opciones -->
+            <div class="text-center animated fadeIn" *ngIf="shouViewOption===0">
+              <p class="text-secondary">Registra tu negocio para llegar a más personas.</p>
+              <button mat-flat-button color="accent" (click)="shouViewOption=2;"><span class="fs-18 fw-100">Registrar mi negocio</span></button>
+
+              <hr>
+
+              <button mat-button color="primary" (click)="shouViewOption=1;">Ingresar</button>
+            </div>
+
+            <ng-container *ngIf="shouViewOption===1">
+              <button mat-stroked-button (click)="shouViewOption=0"><i class="fa fa-arrow-left"></i> Atras</button>              
+              <app-login-personal-autorizado></app-login-personal-autorizado>          
+            </ng-container>
+
+
+            <ng-container *ngIf="shouViewOption===2">
+              <button mat-stroked-button (click)="shouViewOption=0"><i class="fa fa-arrow-left"></i> Atras</button>              
+              <app-registro-comercio></app-registro-comercio>    
+              <br><br><br><br><br>      
+            </ng-container>
+                        
           </div>
         </div>
       </div>

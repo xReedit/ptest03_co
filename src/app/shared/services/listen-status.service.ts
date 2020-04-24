@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { EstadoPedidoModel } from 'src/app/modelos/estado.pedido.model';
 import { DeliveryDireccionCliente } from 'src/app/modelos/delivery.direccion.cliente.model';
+import { PedidoRepartidorModel } from 'src/app/modelos/pedido.repartidor.model';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +64,16 @@ export class ListenStatusService {
   // notifica efectivo en mano
   private efectivoManoSource = new BehaviorSubject<number>(0);
   public efectivoManoMano$ = this.efectivoManoSource.asObservable();
+
+
+  // comercio // comercio
+  // notifica cambios en el pedido
+  private pedidoModificadoSource = new BehaviorSubject<PedidoRepartidorModel>(null);
+  public pedidoModificado$ = this.pedidoModificadoSource.asObservable();
+
+  // notifica nuevo pedido a los markets
+  private notificaPedidoNuevoSource = new BehaviorSubject<PedidoRepartidorModel>(null);
+  public notificaPedidoNuevo$ = this.notificaPedidoNuevoSource.asObservable();
 
   constructor() { }
 
@@ -128,5 +139,15 @@ export class ListenStatusService {
     this.efectivoManoSource.next(value);
   }
 
+
+
+  // comercio
+  setPedidoModificado(pedido: PedidoRepartidorModel) {
+    this.pedidoModificadoSource.next(pedido);
+  }
+
+  setNotificaNuevoPedido(pedido: PedidoRepartidorModel) {
+    this.notificaPedidoNuevoSource.next(pedido);
+  }
 
 }

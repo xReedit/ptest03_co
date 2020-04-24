@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PedidoComercioService } from 'src/app/shared/services/pedido-comercio.service';
 import { PedidoModel } from 'src/app/modelos/pedido.model';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
+import { ListenStatusService } from 'src/app/shared/services/listen-status.service';
 
 @Component({
   selector: 'app-comp-orden-detalle',
@@ -35,7 +36,8 @@ export class CompOrdenDetalleComponent implements OnInit {
 
   constructor(
     private pedidoComercioService: PedidoComercioService,
-    private comercioService: ComercioService
+    private comercioService: ComercioService,
+    private listenService: ListenStatusService
   ) { }
 
   ngOnInit(): void {
@@ -126,6 +128,7 @@ export class CompOrdenDetalleComponent implements OnInit {
     this.orden.ap_repartidor = _repartidor.apellido;
     this.orden.telefono_repartidor = _repartidor.telefono;
 
+    this.listenService.setPedidoModificado(this.orden);
     this.pedidoComercioService.setRepartidorToPedido(indexR, this.orden);
 
   }

@@ -1,29 +1,36 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { CalcDistanciaService } from 'src/app/shared/services/calc-distancia.service';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
 import { SedeInfoModel } from 'src/app/modelos/sede.info.model';
+import { SocketService } from 'src/app/shared/services/socket.service';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
+import { Subject } from 'rxjs/internal/Subject';
+import { PedidoRepartidorModel } from 'src/app/modelos/pedido.repartidor.model';
+import { ListenStatusService } from 'src/app/shared/services/listen-status.service';
 
 @Component({
   selector: 'app-mapa-ordenes',
   templateUrl: './mapa-ordenes.component.html',
   styleUrls: ['./mapa-ordenes.component.css']
 })
-export class MapaOrdenesComponent implements OnInit {
+export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
   infowindow = new google.maps.InfoWindow();
 
   listRepartidores: any;
-  listPedidos: any;
+  // _listPedidos: any = [];
 
-  @Input()
-  public set listaPedidos(list: any) {
-    this.listPedidos = list;
-    console.log('listPedidos', list);
-    if ( list ) {
-      this.addMarkerPedidos();
-    }
-  }
+
+  @Input() listaPedidos!: any;
+  // public set listaPedidos(list: any) {
+  //   // if ( this.listaPedidos.length === list ) {return; }
+  //   console.log('listaPedidos', list);
+  //   if ( list && this.listaPedidos.length !== list.length ) {
+  //     this.listaPedidos = list;
+  //     this.addMarkerPedidos();
+  //   }
+  // }
 
   @Output() pedidoOpen = new EventEmitter<any>(); // abre el pedido en el dialog
 
@@ -44,16 +51,19 @@ export class MapaOrdenesComponent implements OnInit {
   infoContent = '';
 
   markersPedidos = [];
-  markersRepartidores = [];
+  markersRepartidores: any = [];
 
   dataComercio: SedeInfoModel;
 
   isPropioRepartidores = false;
 
+  private destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private calcCoordenadaService: CalcDistanciaService,
-    private comercioService: ComercioService
+    private comercioService: ComercioService,
+    private socketService: SocketService,
+    private listenService: ListenStatusService
   ) { }
 
   ngOnInit(): void {
@@ -70,8 +80,92 @@ export class MapaOrdenesComponent implements OnInit {
 
     if ( this.isPropioRepartidores ) {
       this.loadRepartidoresComercio();
+    } else {
+      // traer los repartidores que tengan pedidos activos de este comercio
     }
+
+    this.listenSockets();
   }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if ( !this.listaPedidos ) {return; }
+    // this.listaPedidos = this.listaPedidos;
+    this.addMarkerPedidos();
+    console.log('cambios en listaPediods', this.listaPedidos);
+    // console.log('cambios en list', this.listaPedidos);
+  }
+
+  private listenSockets(): void {
+
+
+    this.socketService.onRepartidorNotificaUbicacion()
+    .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        // buscamos al repartidor
+        const _elRepartidor = this.markersRepartidores.filter(r => r.idrepartidor === data.idrepartidor)[0];
+        const _positionActual: google.maps.LatLngLiteral = {
+          lat: data.coordenadas.latitude,
+          lng: data.coordenadas.longitude
+        };
+        _elRepartidor.position = _positionActual;
+      });
+
+
+    this.socketService.onRepartidorNotificaFinPedido()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((pedido: any) => {
+      console.log('onRepartidorNotificaFinPedido', pedido);
+
+      // cambiar de icono
+      const p = this.buscarPedidoEnMarcadores(pedido.idpedido);
+      const _options: google.maps.MarkerOptions = {
+        animation: 0,
+        draggable: false,
+        icon: `./assets/images/marker-3.png`
+      };
+
+      p.options = _options;
+    });
+
+    // pedido nuevo
+    this.listenService.notificaPedidoNuevo$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((getOrden: any) => {
+      if ( !getOrden ) {return; }
+        console.log('nuevo pedido listen service', getOrden);
+        // this.listaPedidos.push(getOrden);
+        this.addMarkerPedidos();
+    });
+
+    // pedido modificado // se asigno repartidor
+    this.listenService.pedidoModificado$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((pedido: any) => {
+
+        if ( !pedido ) {return; }
+
+        console.log('Cambiamos icono');
+
+        // buscar pedido en los marcadores
+        // const p = this.markersPedidos.filter(_p => _p.idpedido === pedido.idpedido)[0];
+        const p = this.buscarPedidoEnMarcadores(pedido.idpedido);
+        const iconMarker = pedido.idrepartidor ? 'marker-1.png' : 'marker-0.png';
+        const _options: google.maps.MarkerOptions = {
+          animation: pedido.idrepartidor ? google.maps.Animation.DROP : google.maps.Animation.BOUNCE,
+          draggable: false,
+          icon: `./assets/images/${iconMarker}`
+        };
+
+        p.options = _options;
+
+      });
+  }
+
 
   private loadRepartidoresComercio(): void {
     this.comercioService.loadRepartidoresComercio()
@@ -83,8 +177,10 @@ export class MapaOrdenesComponent implements OnInit {
   }
 
   private addMarkerRepartidor(): void {
+    this.markersRepartidores = [];
     this.listRepartidores.map((r: any) => {
       this.markersRepartidores.push({
+        idrepartidor: r.idrepartidor,
         position: {
           lat: r.position_now.latitude,
           lng: r.position_now.longitude
@@ -108,15 +204,25 @@ export class MapaOrdenesComponent implements OnInit {
     this.infowindow.open(this.map._googleMap, marker._marker);
   }
 
+  private buscarPedidoEnMarcadores(idpedido: number): any {
+    return this.markersPedidos.filter(_p => _p.idpedido === idpedido)[0];
+  }
 
   // ordenes o pedidos
-
   private addMarkerPedidos(): void {
     this.markersPedidos = [];
-    this.listPedidos.map((p: any, i: number) => {
+    this.listaPedidos.map((p: any, i: number) => {
+
       const dataDelivery = p.json_datos_delivery.p_header.arrDatosDelivery; // .direccionEnvioSelected
-      const iconMarker = p.idrepartidor ? 'marker-1.png' : 'marker-0.png';
+      let iconMarker = p.idrepartidor ? 'marker-1.png' : 'marker-0.png';
+      let tituloText = 'Pedido ' + p.idpedido;
+      if ( p.pwa_delivery_status.toString()  === '4' ) {
+        iconMarker = 'marker-3.png';
+        tituloText = p.idpedido.toString();
+      }
+
       this.markersPedidos.push({
+        idpedido: p.idpedido,
         position: {
           lat: dataDelivery.direccionEnvioSelected.latitude,
           lng: dataDelivery.direccionEnvioSelected.longitude
@@ -124,21 +230,23 @@ export class MapaOrdenesComponent implements OnInit {
         label: {
           color: '#0d47a1',
           fontWeight: '600',
-          text: 'Pedido ' + (i + 1)
+          text: tituloText
         },
         title: 'Pedido',
         info: p.idpedido,
         options: {
-          animation: google.maps.Animation.BOUNCE
+          animation: p.idrepartidor ? 0 : google.maps.Animation.BOUNCE,
+          draggable: false,
+          icon: `./assets/images/${iconMarker}`
         }
       });
 
-      this.markerOptionsPedido.icon = `./assets/images/${iconMarker}`;
+      // this.markerOptionsPedido.icon = `./assets/images/${iconMarker}`;
     });
   }
 
   openPedido(index: number): void {
-    const itemPedido = this.listPedidos[index];
+    const itemPedido = this.listaPedidos[index];
     this.pedidoOpen.emit(itemPedido);
   }
 

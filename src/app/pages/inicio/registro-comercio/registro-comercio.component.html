@@ -1,0 +1,104 @@
+<div class="text-center p-3 animated fadeIn" style="max-width: 400px;">
+
+    <form #frmpass="ngForm" *ngIf="!showRegisterSuccces">
+
+
+
+        <mat-form-field class="w-100">
+            <p class="fw-600 text-secondary mb-1">Nombre comercial</p>
+            <p class="fw-100 fs-13 text-secondary mb-2"><strong>El nombre comercial</strong>, como quieres que aparezca en nuestro catálogo.</p>
+            <input matInput [(ngModel)]="comercio.nombre" name="nombre" required>
+        </mat-form-field>
+    
+        <mat-form-field class="w-100">        
+            <p class="fw-600 text-secondary mb-1">Breve Descripción</p>
+            <p class="fw-100 fs-13 text-secondary mb-2">Explica en pocas palabras qué ofreces, horarios para hacer pedidos, tiempo promedio que toma la entrega.</p>
+            <textarea  matInput [(ngModel)]="comercio.descripcion" name="descripcion" maxlength="250" required></textarea>
+        </mat-form-field>
+    
+        <mat-form-field class="w-100">        
+            <p class="fw-600 text-secondary mb-1">Link a tu Página Web / Facebook / Instagram</p>
+            <p class="fw-100 fs-13 text-secondary mb-2">Escribe aquí la URL de tu página web/facebook/instagram</p>
+            <input matInput [(ngModel)]="comercio.link" name="link">
+        </mat-form-field>
+    
+        <mat-form-field class="w-100">        
+            <p class="fw-600 text-secondary mb-1">Dirección</p>
+            <p class="fw-100 fs-13 text-secondary mb-2">La dirección de tu empresa/servicio, así los visitantes podrán visualizar en el mapa qué tan cerca estás de su casa.</p>
+            <input matInput [(ngModel)]="comercio.direccion" name="direccion" required>
+        </mat-form-field>
+    
+        <mat-form-field class="w-100">
+            <p class="fw-600 text-secondary mb-1">Cual es el giro de tu negocio?</p>
+            <p class="fw-100 fs-13 text-secondary mb-2">Elige qué es lo que ofreces.</p>
+            <mat-select (selectionChange)="getSubItem($event)" [(ngModel)]="comercio.categoria" name="caltegoria" required>
+              <mat-option *ngFor="let item of listCategoria" [value]="item">
+                {{item.descripcion}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field class="w-100" *ngIf="listSubCategoria">
+            <p class="fw-600 text-secondary mb-1">Categoria</p>
+            <p class="fw-100 fs-13 text-secondary mb-2">Selecciona uno o varios</p>
+            <mat-select [multiple]="true" [(ngModel)]="comercio.sub_categoria" name="sub_categoria" required>
+              <mat-option *ngFor="let subitem of listSubCategoria" [value]="subitem">
+                {{subitem.descripcion}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field class="w-100">        
+            <p class="fw-600 text-secondary mb-1">Ciudades a las que llegas</p>
+            <p class="fw-100 fs-13 text-secondary mb-2">Por favor selecciona tus zonas de delivery, así los visitante(s) sabrán si llegas hasta su casa..</p>        
+            <mat-select (selectionChange)="getCiudades($event)" [(ngModel)]="comercio.departamento" name="departamento" required>
+                <mat-option *ngFor="let depa of listDepartamento" [value]="depa">
+                  {{depa.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field class="w-100" *ngIf="_listProvincia">        
+            <mat-select [multiple]="true" placeholder="Ciudad" [(ngModel)]="comercio.ciudad" name="ciudad" required>
+                <mat-option *ngFor="let prov of _listProvincia" [value]="prov">
+                  {{prov.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
+        <mat-form-field class="w-100">
+            <p class="fw-600 text-secondary mb-1">Opciones Disponibles</p>
+            <p class="fw-100 fs-13 text-secondary mb-2">Por favor elige la forma de entrega que estan planeando de ofrecer.</p>
+            <mat-select [multiple]="true" [(ngModel)]="comercio.tipo_entrega" name="tipo_entrega" required>
+              <mat-option *ngFor="let tipo of listFormaEntrega" [value]="tipo">
+                {{tipo.descripcion}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field class="w-100">        
+            <p class="fw-600 text-secondary mb-1">Teléfono</p>
+            <p class="fw-100 fs-13 text-secondary mb-2">A qué número te podemos contactar para validar el registro.</p>
+            <input matInput [(ngModel)]="comercio.telefono" name="telefono" required>
+        </mat-form-field>
+        
+        <br><br>
+    
+        <button  mat-flat-button color="accent" 
+        [disabled]="!frmpass.valid || loader"
+        (click)="registrarComercio()">
+            <i class="fa fa-spinner fa-spin" *ngIf="loader"></i>
+            Listo, registrar.
+        </button>
+
+    </form>
+
+    <div class="animated fadeIn" *ngIf="showRegisterSuccces">
+        <div class="w-20">
+            <p class="fw-600 fs-18">Muchas gracias! Recibimos su <span class="text-success">registro.</span> Nos pondremos en contacto con usted en breve. <span class="text-success">Que tenga un buen día.</span> </p>
+        </div>
+    </div>
+    
+
+</div>

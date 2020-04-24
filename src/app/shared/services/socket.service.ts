@@ -303,6 +303,22 @@ export class SocketService {
     });
   }
 
+  onRepartidorNotificaUbicacion() {
+    return new Observable(observer => {
+      this.socket.on('repartidor-notifica-ubicacion', (res: any) => {
+        observer.next(res);
+      });
+    });
+  }
+
+  onRepartidorNotificaFinPedido() {
+    return new Observable(observer => {
+      this.socket.on('repartidor-propio-notifica-fin-pedido', (res: any) => {
+        observer.next(res);
+      });
+    });
+  }
+
   ///// comercio ///// comercio
   ///// comercio ///// comercio
 

@@ -3,6 +3,7 @@ import { CrudHttpService } from './crud-http.service';
 import { ComercioService } from './comercio.service';
 import { SedeInfoModel } from 'src/app/modelos/sede.info.model';
 import { Observable } from 'rxjs/internal/Observable';
+import { SocketService } from './socket.service';
 
 
 
@@ -29,7 +30,8 @@ export class PedidoComercioService {
 
   constructor(
     private comercioService: ComercioService,
-    private crudService: CrudHttpService
+    private crudService: CrudHttpService,
+    private socketService: SocketService
   ) {
 
     this.infoComercio = this.comercioService.getSedeInfo();
@@ -124,6 +126,8 @@ export class PedidoComercioService {
 
   setRepartidorToPedido(_idrepartidor: number, _pedido: any): void {
     const _dataSend = { idrepartidor: _idrepartidor, idpedido: _pedido.idpedido };
+    this.socketService.emit('set-repartidor-pedido-asigna-comercio', _pedido);
+
     this.crudService.postFree(_dataSend, 'comercio', 'set-repartidor-to-pedido')
     .subscribe(res => {
       console.log(res);

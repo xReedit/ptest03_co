@@ -12,6 +12,8 @@ import { Subject } from 'rxjs/internal/Subject';
 import { TipoConsumoModel } from 'src/app/modelos/tipoconsumo.model';
 import { SeccionModel } from 'src/app/modelos/seccion.model';
 import { ActivatedRoute } from '@angular/router';
+import { PedidoRepartidorService } from 'src/app/shared/services/pedido-repartidor.service';
+import { ListenStatusService } from 'src/app/shared/services/listen-status.service';
 
 // import * as Isotope from 'isotope-layout';
 // // declare var Isotope: any;
@@ -45,10 +47,12 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   constructor(
     private comercioService: ComercioService,
     private pedidoComercioService: PedidoComercioService,
+    private pedidoRepartidorService: PedidoRepartidorService,
     private utilService: UtilitariosService,
     private dialog: MatDialog,
     private socketService: SocketService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private listenService: ListenStatusService
   ) { }
 
   ngOnInit(): void {
@@ -66,7 +70,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
     this.listBtnToolbar.push({descripcion: 'Pendientes', checked: true, filtro: `'P', 'A'`});
     this.listBtnToolbar.push({descripcion: ' Listos ', checked: false, filtro: `'D'`});
-    this.listBtnToolbar.push({descripcion: ' Entregados ', checked: false, filtro: `'R'` });
+    this.listBtnToolbar.push({descripcion: ' Entregados ', checked: false, filtro: `'R', 'E'` });
   }
 
   ngOnDestroy(): void {
@@ -86,6 +90,9 @@ export class OrdenesComponent implements OnInit, OnDestroy {
           getOrden.new = true;
           this.listOrdenes.push(getOrden);
 
+          this.listenService.setNotificaNuevoPedido(getOrden);
+
+          this.pedidoRepartidorService.playAudioNewPedido();
           this.masonry.reloadItems();
           this.masonry.layout();
         });
