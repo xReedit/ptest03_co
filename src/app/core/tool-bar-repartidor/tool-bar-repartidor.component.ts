@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 // import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { InfoTockenService } from 'src/app/shared/services/info-token.service';
+import { ComercioService } from 'src/app/shared/services/comercio.service';
 // import { SocketService } from 'src/app/shared/services/socket.service';
 
 @Component({
@@ -10,14 +11,20 @@ import { InfoTockenService } from 'src/app/shared/services/info-token.service';
 })
 export class ToolBarRepartidorComponent implements OnInit {
   @Output() public changeTogle = new EventEmitter<boolean>(false);
+  @Output() public openMenuLateral = new EventEmitter<boolean>(false);
 
   isTogleActive = false;
+  dataSede: any;
   constructor(
     private infoTokenService: InfoTockenService,
+    private comercioService: ComercioService
     // private socketService: SocketService
   ) { }
 
   ngOnInit() {
+    this.dataSede = this.comercioService.getSedeInfo();
+    console.log('this.dataSede', this.dataSede);
+
     this.isTogleActive = this.infoTokenService.infoUsToken.isOnline;
     // this.changeTogle.emit(this.isTogleActive);
     // if ( this.isTogleActive ) {
@@ -29,6 +36,11 @@ export class ToolBarRepartidorComponent implements OnInit {
     this.isTogleActive = $event.checked;
     this.infoTokenService.setisOnline(this.isTogleActive);
     this.changeTogle.emit(this.isTogleActive);
+  }
+
+  abrirMenuLateral() {
+    console.log('this.openMenuLateral', true);
+    this.openMenuLateral.emit(true);
   }
 
   // repartidorOnLine() {

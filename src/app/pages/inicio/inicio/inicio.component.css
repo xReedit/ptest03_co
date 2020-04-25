@@ -1,6 +1,7 @@
 .header-ini {
     position:relative;
-    background: #00b14f;
+    /* background: #00b14f; */
+    background-color: #343a40;
     color: white;
     height: 10px;
 }

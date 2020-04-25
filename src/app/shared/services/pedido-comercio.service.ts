@@ -93,6 +93,11 @@ export class PedidoComercioService {
         btnTitulo = '';
         estadoTitle = isSave ? 'Listo' : 'Listo';
         break;
+      case 'E':
+        estadoPedido = 'E'; // entregado con el cliente
+        btnTitulo = '';
+        estadoTitle = 'Entregado';
+        break;
     }
 
     this._estadoPedido.estado = estadoPedido;

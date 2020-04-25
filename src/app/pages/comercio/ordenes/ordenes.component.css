@@ -32,8 +32,12 @@
     width: 220px;
 }
 
+.card-encabezado {
+    background-color: #37474f;
+}
+
 .xw-220{
-    width: 310px;
+    min-width: 270px;    
 }
 
 .card-orden.quitar-orden {
@@ -46,6 +50,7 @@
     display: flex;
     justify-content: space-between;
     border-radius: 5px 5px 0px 0px;
+    background: #e0e0e0;
 }
 
 .c-header.verde {
@@ -60,5 +65,53 @@
     background: lightcoral;
 }
 
+.c-etiqueta-tiempo.verde {
+    background: lightgreen;
+}
+
+.c-etiqueta-tiempo.amarillo {
+    background: khaki;
+}
+
+.c-etiqueta-tiempo.rojo {
+    background: lightcoral;
+}
+
 .c-header p{ margin: 0px;}
 .c-body p{ margin: 0px;}
+
+
+.card-resumen {
+    width: calc(100% - 270px);
+    position: fixed;
+    bottom: 0px;    
+    border-top: solid 2px #37474F;
+    max-height: 250px;
+    overflow: auto; 
+    transition: ease-in all 0.2s;   
+}
+
+.card-resumen.ampliar {
+    width: 100%;
+}
+
+.card-lista {
+    margin-left: 0px;
+    background-color: #455a64;
+    transition: ease-in all 0.2s;
+}
+
+.card-lista.cerrar {
+    margin-left: -270px;
+}
+
+.btn-card-lista {
+    position: fixed;
+    left: 230px;
+    z-index: 1;
+    transition: ease-in all 0.2s;
+}
+
+.btn-card-lista.cerrar {
+    left: 0px;
+}

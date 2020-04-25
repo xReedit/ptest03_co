@@ -13,6 +13,8 @@ import { ComercioService } from 'src/app/shared/services/comercio.service';
 })
 export class MainComponent implements OnInit, OnDestroy {
   private destroy$: Subject<boolean> = new Subject<boolean>();
+  showPanelLeft = false;
+
   constructor(
     private dialog: MatDialog,
     private socketService: SocketService,

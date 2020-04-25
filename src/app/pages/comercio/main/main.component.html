@@ -1,7 +1,31 @@
-<div class="animated fadeIn">
-    <!-- header -->
-    <app-tool-bar-repartidor (changeTogle)="comercioOnLine($event)"></app-tool-bar-repartidor>
-    <div class="content-body">
-        <router-outlet></router-outlet>
+<mat-drawer-container class="example-container">
+    <mat-drawer #drawerIzq class="example-sidenav" mode="over" [opened]="showPanelLeft" (closedStart)="showPanelLeft=false">
+        <div>
+            <div class="p-3">
+                <span class="fw-600"><i class="fa fa-arrow-left pr-2" (click)="drawerIzq.toggle()"></i> Opciones del sistema</span>
+            </div>      
+            <hr>
+            <div>
+                <div matRipple class="xCursor border-bottom p-3" [routerLink]="['ordenes', 'lista']" (click)="drawerIzq.toggle()">
+                    <i class="fa fa-paper-plane pr-2"></i>
+                    <span> Pedidos en el panel </span>                    
+                </div>
+                <div matRipple class="xCursor border-bottom p-3" [routerLink]="['ordenes', 'maps']" (click)="drawerIzq.toggle()">
+                    <i class="fa fa-map-signs pr-2"></i>
+                    <span> Pedidos en el mapa</span>                                        
+                </div>
+            </div>
+        </div>
+
+    </mat-drawer>
+
+    <!-- body -->
+    <div class="animated fadeIn">
+        <!-- header -->
+        <app-tool-bar-repartidor (changeTogle)="comercioOnLine($event)" (openMenuLateral)="showPanelLeft=$event"></app-tool-bar-repartidor>
+        <div class="content-body">
+            <router-outlet></router-outlet>
+        </div>
     </div>
-</div>
+
+</mat-drawer-container>

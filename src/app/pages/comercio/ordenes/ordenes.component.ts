@@ -26,6 +26,8 @@ import { ListenStatusService } from 'src/app/shared/services/listen-status.servi
 export class OrdenesComponent implements OnInit, OnDestroy {
   listOrdenes: any;
   listResumenAll: any; // listado de resumen de todos los pedidos
+  listResumenInformativo: any; // informacion que se muestra en la parte de abajo del mapa
+  listRepartidoresInformativo: any = []; // informacion que se muestra en la parte de abajo del mapa
   cantidadOrdenes = 0; // cantidad de pedidos en vista
   timerRun: any;
   timepoMax = 10;
@@ -43,6 +45,15 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   listBtnToolbar = [];
 
   isComercioPropioRepartidor = false;
+
+
+  // tablas
+  displayedColumns: string[] = ['n', 'pedido', 'direccion', 'repartidor', 'tiempo', 'importe'];
+  displayedColumnsRepartidor: string[] = ['repartidor', 'importe'];
+
+
+  // flag para cerrar card lista
+  cardListaToggle = false;
 
   constructor(
     private comercioService: ComercioService,
@@ -113,6 +124,25 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
       console.log('pedido aceptado', data);
     });
+
+    // fin del pedido onRepartidorNotificaFinPedido
+    this.socketService.onRepartidorNotificaFinPedido()
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((pedido: any) => {
+      console.log('onRepartidorNotificaFinPedido', pedido);
+
+      // detener tiempo pedido
+      const _pedidoFind = this.findListaOrdenById(pedido.idpedido);
+      if ( !_pedidoFind ) {return; }
+      _pedidoFind.pwa_delivery_status = 4;
+      _pedidoFind.estadoTitle = this.pedidoComercioService.getEstadoPedido(_pedidoFind.pwa_estado).estadoTitle;
+
+      // establecer estados para visualizacion de opciones
+      this.listenService.setPedidoModificado(null);
+      this.listenService.setPedidoModificado(pedido);
+    });
+
+
   }
 
   private xloadOrdenesPendientes(fitro: string): void {
@@ -126,6 +156,8 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       this.darFormatoOrden();
 
       this.initTimerOrdenes();
+
+      this.resumenInformativo();
     });
   }
 
@@ -136,6 +168,9 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       z.json_datos_delivery.p_subtotales = this.pedidoComercioService.darFormatoSubTotales(z.json_datos_delivery.p_subtotales);
       z.visible = true;
       z.isTieneRepartidor = z.idrepartidor ? true : false;
+
+      const minStart = z.tiempo ? z.tiempo : 0;
+      z.color = minStart >= this.timepoMax ? 'r' : minStart >= this.timepoMedio ? 'a' : 'v';
       return z;
     });
 
@@ -148,8 +183,10 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   private calcTimer(): void {
     let minStart = 0;
     this.listOrdenes.map(x => {
+      if ( x.pwa_delivery_status.toString() === '4')  { x.labelMinTiempo = 'Min'; return; }
+      x.labelMinTiempo = '';
       x.tiempo = this.utilService.xTiempoTranscurridos_2(x.hora);
-      minStart = x.tiempo.split(':')[0];
+      minStart = x.tiempo.split(':')[1]; // minutos
       x.color = minStart >= this.timepoMax ? 'r' : minStart >= this.timepoMedio ? 'a' : 'v';
     });
   }
@@ -200,7 +237,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
   resumenOrdenesPendientes() {
     this.listResumenAll = [];
-    this.listOrdenes.map(o => {
+    this.listOrdenes.map((o: any) => {
       o.json_datos_delivery.p_body.tipoconsumo.map((c: TipoConsumoModel) => {
         c.secciones.map((s: SeccionModel) => {
           let _secResumen = <SeccionModel>this.listResumenAll.filter((r: SeccionModel) => r.idseccion === s.idseccion)[0];
@@ -213,6 +250,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
             let _itemResumen = _secResumen.items.filter(ri => ri.iditem === i.iditem)[0];
             if ( _itemResumen ) {
               _itemResumen.cantidad_seleccionada += i.cantidad_seleccionada;
+              _itemResumen.precio_total += i.precio_total;
             } else {
               _itemResumen = JSON.parse(JSON.stringify(i));
               _secResumen.items.push(_itemResumen);
@@ -226,9 +264,88 @@ export class OrdenesComponent implements OnInit, OnDestroy {
     console.log('listResumen', this.listResumenAll);
   }
 
+  // resumen de los pedidos
+  private resumenInformativo() {
+    let rowAdd: any = {};
+    let rowAddRepartidor: any = {};
+    this.listResumenInformativo = [];
+    this.listRepartidoresInformativo = [];
+    this.listOrdenes.map((o: any, i: number) => {
+      rowAdd = {
+        n: i + 1,
+        idpedido: o.idpedido,
+        correlativo_dia: o.correlativo_dia,
+        cliente: o.json_datos_delivery.p_header.arrDatosDelivery.nombre,
+        direccion: o.json_datos_delivery.p_header.arrDatosDelivery.direccionEnvioSelected.direccion,
+        ciudad: o.json_datos_delivery.p_header.arrDatosDelivery.direccionEnvioSelected.ciudad || '',
+        fecha: o.fecha,
+        hora: o.hora,
+        tiempo: o.tiempo ? o.tiempo + ' Min' : '',
+        repartidor: o.nom_repartidor,
+        estado: o.estadoTitle,
+        color: o.color,
+        metodoPago: o.json_datos_delivery.p_header.arrDatosDelivery.metodoPago,
+        importe: o.total
+      };
+      this.listResumenInformativo.push(rowAdd);
+
+      if ( this.isComercioPropioRepartidor ) {
+        rowAddRepartidor = {
+          idrepartidor: o.idrepartidor,
+          num_pedidos: 1,
+          nom_repartidor: o.nom_repartidor,
+          ap_repartidor: o.ap_repartidor,
+          metodoPago: [{
+            num_pedidos: 1,
+            idtipo_pago: o.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago,
+            descripcion: o.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.descripcion,
+            importe: parseFloat(o.total)
+          }],
+          importe: parseFloat(o.total)
+        };
+
+        this.resumenInformativoRepartidores(rowAddRepartidor);
+
+      }
+
+    });
+
+    // console.log('this.listResumenInformativo', this.listResumenInformativo);
+  }
+
+  // si y solo si el comercio tiene repartidores propios
+  private resumenInformativoRepartidores(row: any) {
+    // buscamos repartidor en lista
+    const _elRepartidor = this.listRepartidoresInformativo.filter(r => r.idrepartidor === row.idrepartidor)[0];
+    if ( _elRepartidor ) {
+
+      _elRepartidor.num_pedidos += 1;
+      _elRepartidor.importe += row.importe;
+
+      // metodo de pago
+      const _metodo = _elRepartidor.metodoPago.filter(m => m.idtipo_pago === row.metodoPago[0].idtipo_pago)[0];
+      if ( _metodo ) {
+        _metodo.num_pedidos += 1;
+        _metodo.importe +=  row.metodoPago[0].importe;
+      } else {
+        _elRepartidor.metodoPago.push(row.metodoPago[0]);
+      }
+
+    } else {
+      this.listRepartidoresInformativo.push(row);
+    }
+
+    console.log('this.listRepartidoresInformativo', this.listRepartidoresInformativo);
+  }
+
+  openDialogOrdenFromInformativo(row: any) {
+    console.log('row', row);
+    this.openDialogOrden(this.findListaOrdenById(row.idpedido));
+  }
+
   // buscar orden en lista
   findListaOrdenById(idpedido: number): any {
-    return this.listOrdenes.filter(o => o.idpedido === idpedido).map(x => x);
+    return this.listOrdenes.filter(o => o.idpedido === idpedido)[0];
   }
 
 }

@@ -467,6 +467,8 @@ export class SocketService {
     if ( this.verificandoConexion ) {return; }
     this.verificandoConexion = true;
     this.emit('verificar-conexion', this.socket.id);
+
+    console.log('verifyConexionSocket');
   }
 
   // cierra session despues de que se comprueba que el tiempo de incio se de session supero lo establecido

@@ -21,7 +21,7 @@
 }
 
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
-  background-color: #006E31 !important;
+  background-color: #9e9e9e !important;
 }
 
 
@@ -44,6 +44,23 @@
 .tabs-no-header .mat-tab-header {
   display: none !important;
 }
+
+
+/* tablas */
+.table-model-1 p {
+  margin: 0;
+}
+.table-model-1 td.mat-cell, .mat-footer-cell {
+  font-size: 12px !important;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.table-model-1 tr.mat-row, .mat-header-row {
+  height: 30px !important;
+}
+
+
 
 /* cuando es en celular el dialog detalle orden abre en pantalla completa */
 @media (max-width: 676px) { 

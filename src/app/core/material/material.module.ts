@@ -19,6 +19,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatTableModule} from '@angular/material/table';
 // import {MatSidenavModule} from '@angular/material/sidenav';
 // import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -44,6 +45,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatSlideToggleModule,
     MatSelectModule,
     MatSidenavModule,
+    MatTableModule,
     // MatSidenavModule
     // MatTooltipModule
   ],
@@ -64,7 +66,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatRadioModule,
     MatSlideToggleModule,
     MatSelectModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatTableModule
     // MatSidenavModule
     // MatTooltipModule
   ]

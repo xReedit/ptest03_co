@@ -1,7 +1,12 @@
 <div class="header-app p-3 d-flex justify-content-between">
-    <span>Comercio</span>
-    <button [routerLink]="['ordenes', 'lista']" routerLinkActive="router-link-active" >orden</button>
-    <button [routerLink]="['ordenes', 'maps']">mapa</button>
+    <div class="text-truncate">
+        <i class="fa fa-bars pr-2 xCursor" (click)="abrirMenuLateral()"></i>
+        <span class="fs-14 fw-100 text-truncate">  
+            {{dataSede.nombre | titlecase}} | {{dataSede.ciudad | titlecase}}
+        </span>
+    </div>
+    <!-- <button [routerLink]="['ordenes', 'lista']" routerLinkActive="router-link-active" >orden</button>
+    <button [routerLink]="['ordenes', 'maps']">mapa</button> -->
     <div class="d-flex align-items-center">
         <span class="fs-12 pr-2">En Linea</span>
         <mat-slide-toggle (change) = "repartidorOnLine($event);"  [checked] = "isTogleActive"></mat-slide-toggle>

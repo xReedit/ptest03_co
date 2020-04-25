@@ -115,23 +115,6 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
         _elRepartidor.position = _positionActual;
       });
 
-
-    this.socketService.onRepartidorNotificaFinPedido()
-    .pipe(takeUntil(this.destroy$))
-    .subscribe((pedido: any) => {
-      console.log('onRepartidorNotificaFinPedido', pedido);
-
-      // cambiar de icono
-      const p = this.buscarPedidoEnMarcadores(pedido.idpedido);
-      const _options: google.maps.MarkerOptions = {
-        animation: 0,
-        draggable: false,
-        icon: `./assets/images/marker-3.png`
-      };
-
-      p.options = _options;
-    });
-
     // pedido nuevo
     this.listenService.notificaPedidoNuevo$
     .pipe(takeUntil(this.destroy$))
@@ -155,11 +138,20 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
         // const p = this.markersPedidos.filter(_p => _p.idpedido === pedido.idpedido)[0];
         const p = this.buscarPedidoEnMarcadores(pedido.idpedido);
         const iconMarker = pedido.idrepartidor ? 'marker-1.png' : 'marker-0.png';
-        const _options: google.maps.MarkerOptions = {
+        let _options: google.maps.MarkerOptions = {
           animation: pedido.idrepartidor ? google.maps.Animation.DROP : google.maps.Animation.BOUNCE,
           draggable: false,
           icon: `./assets/images/${iconMarker}`
         };
+
+        // fin del pedido onRepartidorNotificaFinPedido
+        if ( pedido.pwa_delivery_status && pedido.pwa_delivery_status.toString() === '4' ) {
+          _options = {
+            animation: 0,
+            draggable: false,
+            icon: `./assets/images/marker-3.png`
+          };
+        }
 
         p.options = _options;
 

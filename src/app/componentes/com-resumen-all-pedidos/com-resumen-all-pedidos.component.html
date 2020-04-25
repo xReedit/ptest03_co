@@ -1,5 +1,5 @@
 <div>
-    <div *ngFor="let seccion of listResumen">
+    <div *ngFor="let seccion of _listResumen">
         <!-- seccion -->
         <div class="mb-2">
             <span class="fw-600">{{seccion.des}}</span>
@@ -18,4 +18,7 @@
         </div>
         <br>
     </div>    
+    <div class="text-right">
+        <p class="fw-600 fs-18"><span class="text-secondary">Total:</span> {{ sumaTotal | number: '0.2' }}</p>
+    </div>
 </div>
