@@ -12,7 +12,7 @@ const routes: Routes = [{
     data: { titulo: 'Inicio' },
     children: [
         {
-            path: '', redirectTo: 'ordenes'
+            path: '', redirectTo: 'ordenes/lista'
         },
         {
             path: 'ordenes/:id',

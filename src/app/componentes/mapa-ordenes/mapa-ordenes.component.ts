@@ -23,14 +23,7 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
 
 
   @Input() listaPedidos!: any;
-  // public set listaPedidos(list: any) {
-  //   // if ( this.listaPedidos.length === list ) {return; }
-  //   console.log('listaPedidos', list);
-  //   if ( list && this.listaPedidos.length !== list.length ) {
-  //     this.listaPedidos = list;
-  //     this.addMarkerPedidos();
-  //   }
-  // }
+  @Input() listaRepartidoresRed!: any; // lista de repartidores que estan asociados con los pedidos
 
   @Output() pedidoOpen = new EventEmitter<any>(); // abre el pedido en el dialog
 
@@ -45,11 +38,12 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
   };
 
   markerOptionsRepartidor = {draggable: false, icon: './assets/images/delivery-man.png'};
-  markerOptionsPedido = {draggable: false, icon: './assets/images/marker-0.png'};
+  // markerOptionsPedido = {draggable: false, icon: './assets/images/marker-0.png'};
 
   markers = [];
   infoContent = '';
 
+  markerComercio: any = {};
   markersPedidos = [];
   markersRepartidores: any = [];
 
@@ -78,6 +72,9 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
       lng: this.dataComercio.longitude
     };
 
+    // marker Comercio
+    this.addMarkerComercio();
+
     if ( this.isPropioRepartidores ) {
       this.loadRepartidoresComercio();
     } else {
@@ -97,7 +94,30 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
     // this.listaPedidos = this.listaPedidos;
     this.addMarkerPedidos();
     console.log('cambios en listaPediods', this.listaPedidos);
+    console.log('cambios en listaRepartidoresRed', this.listaRepartidoresRed);
     // console.log('cambios en list', this.listaPedidos);
+  }
+
+  private addMarkerComercio(): void {
+    this.markerComercio = {
+      position: {
+        lat: this.center.lat,
+        lng: this.center.lng
+      },
+      label: {
+        color: '#212121',
+        fontWeight: '600',
+        text: this.dataComercio.nombre
+      },
+      title: 'Comercio',
+      info: this.dataComercio.nombre,
+      options: {
+        draggable: false,
+        icon: `./assets/images/marker-4.png`
+      }
+    };
+
+    console.log('markerComercio', this.markerComercio);
   }
 
   private listenSockets(): void {
@@ -168,10 +188,13 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
       });
   }
 
+  // repartidores de la red que estan asignados a los pedidos
+
   private addMarkerRepartidor(): void {
     this.markersRepartidores = [];
     this.listRepartidores.map((r: any) => {
       this.markersRepartidores.push({
+        visible: r.visible ? r.visible : true, // si no son repartidores propios y si el pedido esta finalizado no muestra
         idrepartidor: r.idrepartidor,
         position: {
           lat: r.position_now.latitude,
@@ -185,7 +208,7 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
         title: 'Repartidor',
         info: r.nombre + ' ' + r.apellido,
         options: {
-          animation: google.maps.Animation.BOUNCE
+          animation: 0
         }
       });
     });
@@ -202,6 +225,11 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
 
   // ordenes o pedidos
   private addMarkerPedidos(): void {
+    const isGetRepartidoresFromPedidos = this.dataComercio.pwa_delivery_servicio_propio === 0;
+    this.listaRepartidoresRed = [];
+    let rowAddRepartidor: any = {};
+
+
     this.markersPedidos = [];
     this.listaPedidos.map((p: any, i: number) => {
 
@@ -233,8 +261,24 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
         }
       });
 
+      if ( isGetRepartidoresFromPedidos && p.pwa_delivery_status !== '4' && p.idrepartidor) {
+        rowAddRepartidor = {
+          idrepartidor: p.idrepartidor,
+          idpedido: p.idpedido,
+          nombre: p.nom_repartidor,
+          apellido: p.ap_repartidor,
+          position_now: p.position_now_repartidor
+        };
+
+        this.listaRepartidoresRed.push(rowAddRepartidor);
+      }
+
       // this.markerOptionsPedido.icon = `./assets/images/${iconMarker}`;
     });
+
+    if ( isGetRepartidoresFromPedidos ) {
+      this.listRepartidores = this.listaRepartidoresRed;
+      this.addMarkerRepartidor(); }
   }
 
   openPedido(index: number): void {

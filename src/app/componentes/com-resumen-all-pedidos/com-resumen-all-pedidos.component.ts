@@ -23,7 +23,7 @@ export class ComResumenAllPedidosComponent implements OnInit {
   }
 
   private getTotal(): void {
-    console.log(this._listResumen);
+    this.sumaTotal = 0;
     this._listResumen.map(s => {
       this.sumaTotal += s.items.map(i => i.precio_total).reduce((a, b) => a + b , 0);
     });

@@ -2,10 +2,16 @@
     [zoom]="zoom" [center]="center"
     [options]="options">
 
-    <map-marker #markerElem *ngFor="let markerRepartidor of markersRepartidores"
+    <map-marker *ngIf="markerComercio" #markerElemComercio
+        [position]="markerComercio.position"
+        [title]="markerComercio.title" [options]="markerComercio.options"
+        (mapClick)="openInfo(markerElemComercio, markerComercio)">  
+    </map-marker>
+
+    <map-marker #markerElemRepartidor *ngFor="let markerRepartidor of markersRepartidores"
         [position]="markerRepartidor.position" [label]="markerRepartidor.label"
         [title]="markerRepartidor.title" [options]="markerOptionsRepartidor"
-        (mapClick)="openInfo(markerElem, markerRepartidor)">  
+        (mapClick)="openInfo(markerElemRepartidor, markerRepartidor)">  
     </map-marker>
 
     <map-marker #markerElem *ngFor="let marker of markersPedidos; let i = index;"

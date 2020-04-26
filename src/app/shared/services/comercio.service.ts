@@ -85,7 +85,7 @@ export class ComercioService {
   // carga los repartidores del comercio
   loadRepartidoresComercio() {
     return new Observable(observer => {
-    this.crudService.getAll('comercio', 'get-comercio-repartidor', false, false, true)
+    this.crudService.getAll('comercio', 'get-comercio-repartidor-suscrito', false, false, true)
       .subscribe((res: any) => {
         observer.next(res.data);
       });

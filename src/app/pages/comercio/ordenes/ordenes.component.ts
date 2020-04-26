@@ -28,6 +28,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   listResumenAll: any; // listado de resumen de todos los pedidos
   listResumenInformativo: any; // informacion que se muestra en la parte de abajo del mapa
   listRepartidoresInformativo: any = []; // informacion que se muestra en la parte de abajo del mapa
+  listMetodoPagoInformativo: any = []; // informacion que se muestra en la parte de abajo del mapa // si el comercio esta afiliado a la red de repartidores
   cantidadOrdenes = 0; // cantidad de pedidos en vista
   timerRun: any;
   timepoMax = 10;
@@ -43,6 +44,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
   // botones del toolbar
   listBtnToolbar = [];
+  private optionChekListSelected: any; // opcion seleccionada del toolbar
 
   isComercioPropioRepartidor = false;
 
@@ -50,6 +52,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   // tablas
   displayedColumns: string[] = ['n', 'pedido', 'direccion', 'repartidor', 'tiempo', 'importe'];
   displayedColumnsRepartidor: string[] = ['repartidor', 'importe'];
+  displayedColumnsMetodoPago: string[] = ['Metodo', 'importe'];
 
 
   // flag para cerrar card lista
@@ -106,6 +109,9 @@ export class OrdenesComponent implements OnInit, OnDestroy {
           this.pedidoRepartidorService.playAudioNewPedido();
           this.masonry.reloadItems();
           this.masonry.layout();
+
+          // actualiza resumen informativo
+          this.resumenInformativo();
         });
     });
 
@@ -121,8 +127,17 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       _pedidoFind.idrepartidor = data.idrepartidor;
       _pedidoFind.isTieneRepartidor = true;
       _pedidoFind.telefono_repartidor = data.telefono;
+      // geoposition
+      if ( data.position_now ) {
+        _pedidoFind.position_now_repartidor = data.position_now;
+      }
 
       console.log('pedido aceptado', data);
+
+      // para que actualize en mapa
+      this.listenService.setNotificaNuevoPedido(_pedidoFind);
+      // actualiza resumen informativo
+      this.resumenInformativo();
     });
 
     // fin del pedido onRepartidorNotificaFinPedido
@@ -135,11 +150,16 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       const _pedidoFind = this.findListaOrdenById(pedido.idpedido);
       if ( !_pedidoFind ) {return; }
       _pedidoFind.pwa_delivery_status = 4;
-      _pedidoFind.estadoTitle = this.pedidoComercioService.getEstadoPedido(_pedidoFind.pwa_estado).estadoTitle;
+      _pedidoFind.estadoTitle = this.pedidoComercioService.getEstadoPedido('E').estadoTitle;
+      _pedidoFind.quitar = true;
 
       // establecer estados para visualizacion de opciones
       this.listenService.setPedidoModificado(null);
       this.listenService.setPedidoModificado(pedido);
+      // actualiza resumen informativo
+
+      this.quitarOrden(_pedidoFind);
+      this.resumenInformativo();
     });
 
 
@@ -208,6 +228,8 @@ export class OrdenesComponent implements OnInit, OnDestroy {
         // if (ordenClose.pwa_estado !== 'P') {
           this.quitarOrden(ordenClose);
         // }
+        // actualiza resumen informativo
+        this.resumenInformativo();
       }
     });
 
@@ -215,10 +237,11 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
   private quitarOrden(ordenQuitar: any): void {
     // ordenQuitar.quitar = true;
+    if ( this.optionChekListSelected.descripcion ===  'Entregados' ) {return; }
     setTimeout(() => {
       this.listOrdenes = this.listOrdenes.filter(x => !x.quitar);
 
-      console.log(this.listOrdenes);
+      // console.log(this.listOrdenes);
       this.masonry.reloadItems();
       this.masonry.layout();
     }, 500);
@@ -227,6 +250,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   filterList(opcion: any) {
     this.listBtnToolbar.map(x => x.checked = false);
     opcion.checked = true;
+    this.optionChekListSelected = opcion;
     this.filtrarOrdenes(opcion);
   }
 
@@ -261,15 +285,18 @@ export class OrdenesComponent implements OnInit, OnDestroy {
     });
 
     this.showPanelRigth = true;
-    console.log('listResumen', this.listResumenAll);
+    // console.log('listResumen', this.listResumenAll);
   }
 
   // resumen de los pedidos
   private resumenInformativo() {
     let rowAdd: any = {};
     let rowAddRepartidor: any = {};
+    let rowAddMetodoPago: any = {}; // metodos de pago resumen
+
     this.listResumenInformativo = [];
     this.listRepartidoresInformativo = [];
+    this.listMetodoPagoInformativo = [];
     this.listOrdenes.map((o: any, i: number) => {
       rowAdd = {
         n: i + 1,
@@ -285,13 +312,16 @@ export class OrdenesComponent implements OnInit, OnDestroy {
         estado: o.estadoTitle,
         color: o.color,
         metodoPago: o.json_datos_delivery.p_header.arrDatosDelivery.metodoPago,
-        importe: o.total
+        importe: o.total === '0' ? o.total_r : o.total
       };
       this.listResumenInformativo.push(rowAdd);
 
-      if ( this.isComercioPropioRepartidor ) {
+      // if ( this.isComercioPropioRepartidor ) {
+      // esta lista se usa tambien para mostrar repartidores y su ubicacion que no son propios
+      // se muestra la ubicacion toda vez que el pedido no este cerrado (entregado al cliente)
         rowAddRepartidor = {
           idrepartidor: o.idrepartidor,
+          idpedido: o.idpedido,
           num_pedidos: 1,
           nom_repartidor: o.nom_repartidor,
           ap_repartidor: o.ap_repartidor,
@@ -299,13 +329,25 @@ export class OrdenesComponent implements OnInit, OnDestroy {
             num_pedidos: 1,
             idtipo_pago: o.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago,
             descripcion: o.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.descripcion,
-            importe: parseFloat(o.total)
+            importe: o.total === '0' ? parseFloat(o.total_r) : parseFloat(o.total)
           }],
-          importe: parseFloat(o.total)
+          importe: o.total === '0' ? parseFloat(o.total_r) : parseFloat(o.total)
         };
 
         this.resumenInformativoRepartidores(rowAddRepartidor);
 
+      // }
+
+
+      if ( !this.isComercioPropioRepartidor && o.metodoPagoRegistro ) {
+        rowAddMetodoPago = {
+          num_pedidos: 1,
+          idtipo_pago: o.metodoPagoRegistro[0].idtipo_pago,
+          descripcion: o.metodoPagoRegistro[0].descripcion,
+          importe: o.total === '0' ? parseFloat(o.total_r) : parseFloat(o.total)
+        };
+
+        this.resumenInformativoMetodosPago(rowAddMetodoPago);
       }
 
     });
@@ -335,7 +377,33 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       this.listRepartidoresInformativo.push(row);
     }
 
-    console.log('this.listRepartidoresInformativo', this.listRepartidoresInformativo);
+    // console.log('this.listRepartidoresInformativo', this.listRepartidoresInformativo);
+  }
+
+
+  private resumenInformativoMetodosPago(row: any) {
+    // buscamos el metodo pago
+    const _elMetodod = this.listMetodoPagoInformativo.filter(r => r.idtipo_pago === row.idtipo_pago)[0];
+    if ( _elMetodod ) {
+
+      _elMetodod.num_pedidos += 1;
+      _elMetodod.importe += row.importe;
+
+      // metodo de pago
+      // const _metodo = _elMetodod.metodoPago.filter(m => m.idtipo_pago === row.metodoPago[0].idtipo_pago)[0];
+      // if ( _metodo ) {
+      //   _metodo.num_pedidos += 1;
+      //   _metodo.importe +=  row.metodoPago[0].importe;
+      // } else {
+      //   _elMetodod.metodoPago.push(row);
+      // }
+
+    } else {
+      this.listMetodoPagoInformativo.push(row);
+    }
+
+
+    console.log('this.listMetodoPagoInformativo', this.listMetodoPagoInformativo);
   }
 
   openDialogOrdenFromInformativo(row: any) {

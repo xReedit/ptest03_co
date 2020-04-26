@@ -169,38 +169,70 @@
                     <!-- resumen informativo de pedidos -->
                     <div class="card-resumen" [ngClass]="{'ampliar': cardListaToggle}">
                         <div class="d-flex bg-white w-100">
-                            <div class="border-right p-2" style="min-width: 320px;">
+                            <div class="border-right p-2" style="min-width: 320px;" [ngClass]="{'d-none': !isComercioPropioRepartidor && listMetodoPagoInformativo.length === 0}">
                                 
+                                <ng-container *ngIf="isComercioPropioRepartidor; else elseMetodoPago">
 
-                                <!-- tabla repartidores resuemn informativo-->
-                                <table class="table-model-1 w-100" mat-table [dataSource]="listRepartidoresInformativo">
-                                    <ng-container matColumnDef="repartidor">
-                                        <th mat-header-cell *matHeaderCellDef>Repartidor</th>
-                                        <td mat-cell *matCellDef="let element">
-                                            <p class="fw-600"> {{ element.nom_repartidor | titlecase }} {{ element.ap_repartidor | titlecase }}</p>
-                                            <p class="text-secondary"><span class="fw-100">Pedidos: </span>{{element.num_pedidos | number: '2.' }} </p>
-                                        </td>
-                                    </ng-container>                                    
-                                    <ng-container matColumnDef="importe">
-                                        <th mat-header-cell *matHeaderCellDef>Importe</th>
-                                        <td mat-cell *matCellDef="let element">
-                                            <div *ngFor="let metodo of element.metodoPago" class="mb-1"> 
-                                                <p class="text-secondary">
-                                                    <span class="fw-600 badge" [ngClass]="{'badge-primary': metodo.idtipo_pago === 3, 'badge-info': metodo.idtipo_pago === 2, 'badge-secondary': metodo.idtipo_pago === 1}">
-                                                        {{metodo.descripcion | titlecase }} : 
-                                                    </span> 
-                                                    <span class="text-secondary pl-1">{{metodo.num_pedidos | number: '2.' }}</span> </p>
-                                                <p class="text-secondary"><span class="fw-600">Importe: </span> <span class="text-secondary">{{metodo.importe | number: '.2' }} </span> </p>
-                                            </div>
-                                        </td>
-                                    </ng-container>
+                                    <!-- tabla repartidores resuemn informativo-->
+                                    <table class="table-model-1 w-100" mat-table [dataSource]="listRepartidoresInformativo">
+                                        <ng-container matColumnDef="repartidor">
+                                            <th mat-header-cell *matHeaderCellDef>Repartidor</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <p class="fw-600"> {{ element.nom_repartidor | titlecase }} {{ element.ap_repartidor | titlecase }}</p>
+                                                <p class="text-secondary"><span class="fw-100">Pedidos: </span>{{element.num_pedidos | number: '2.' }} </p>
+                                            </td>
+                                        </ng-container>                                    
+                                        <ng-container matColumnDef="importe">
+                                            <th mat-header-cell *matHeaderCellDef>Importe</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <div *ngFor="let metodo of element.metodoPago" class="mb-1"> 
+                                                    <p class="text-secondary">
+                                                        <span class="fw-600 badge" [ngClass]="{'badge-primary': metodo.idtipo_pago === 3, 'badge-info': metodo.idtipo_pago === 2, 'badge-secondary': metodo.idtipo_pago === 1}">
+                                                            {{metodo.descripcion | titlecase }} : 
+                                                        </span> 
+                                                        <span class="text-secondary pl-1">{{metodo.num_pedidos | number: '2.' }}</span> </p>
+                                                    <p class="text-secondary"><span class="fw-600">Importe: </span> <span class="text-secondary">{{metodo.importe | number: '.2' }} </span> </p>
+                                                </div>
+                                            </td>
+                                        </ng-container>
 
-                                    <tr mat-header-row *matHeaderRowDef="displayedColumnsRepartidor"></tr>
-                                    <tr mat-row *matRowDef="let row; columns: displayedColumnsRepartidor;"></tr>
-                                </table>
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsRepartidor"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsRepartidor;"></tr>
+                                    </table>
+                                    <!-- tabla repartidores resuemn informativo-->
+                                    
+                                </ng-container>
+                                <ng-template #elseMetodoPago>
 
-
+                                    <!-- resumen metodo pago si no tiene repartidores propios -->
+                                    <table class="table-model-1 w-100" mat-table [dataSource]="listMetodoPagoInformativo">
+                                        <ng-container matColumnDef="Metodo">
+                                            <th mat-header-cell *matHeaderCellDef>Metodo</th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <p class="fw-600 badge" style="font-size: 13px !important;" [ngClass]="{'badge-primary': element.idtipo_pago === 5, 'badge-info': element.idtipo_pago === 2, 'badge-secondary': element.idtipo_pago === 1}">
+                                                    {{element.descripcion | titlecase }} : 
+                                                </p>                                            
+                                                <p class="text-secondary"><span class="fw-100">Pedidos: </span>{{element.num_pedidos | number: '2.' }} </p>
+                                            </td>
+                                        </ng-container>                                    
+                                        <ng-container matColumnDef="importe">
+                                            <th mat-header-cell *matHeaderCellDef>Importe</th>
+                                            <td mat-cell *matCellDef="let element">                                            
+                                                <p class="text-secondary">{{element.importe | number: '.2' }} </p>
+                                            </td>
+                                        </ng-container>
+    
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsMetodoPago"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsMetodoPago;"></tr>
+                                    </table>
+                                    <!-- resumen metodo pago si no tiene repartidores propios -->
+                                    
+                                </ng-template>
+                                
                             </div>
+
+                            
+                            
                             <div class="w-100 p-2">
                                 
                                 <!-- tabla pedidos resuemn informativo-->
