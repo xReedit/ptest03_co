@@ -45,7 +45,7 @@ export class MainComponent implements OnInit, OnDestroy {
     .pipe(takeUntil(this.destroy$))
     .subscribe(res => {
       this.comercioService.setSedeInfo(res[0].datossede[0]);
-      console.log('datos sede', res);
+      // console.log('datos sede', res);
 
       this.comercioService.loadDatosImpresion();
       this.comercioService.loadDatosTipoPago();

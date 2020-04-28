@@ -23,7 +23,7 @@ export class ToolBarRepartidorComponent implements OnInit {
 
   ngOnInit() {
     this.dataSede = this.comercioService.getSedeInfo();
-    console.log('this.dataSede', this.dataSede);
+    // console.log('this.dataSede', this.dataSede);
 
     this.isTogleActive = this.infoTokenService.infoUsToken.isOnline;
     // this.changeTogle.emit(this.isTogleActive);
@@ -39,7 +39,7 @@ export class ToolBarRepartidorComponent implements OnInit {
   }
 
   abrirMenuLateral() {
-    console.log('this.openMenuLateral', true);
+    // console.log('this.openMenuLateral', true);
     this.openMenuLateral.emit(true);
   }
 

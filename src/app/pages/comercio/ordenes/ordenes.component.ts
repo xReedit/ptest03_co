@@ -98,7 +98,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
     this.socketService.onGetNuevoPedido()
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
-      console.log('nuevo pedido', res);
+      // console.log('nuevo pedido', res);
       this.comercioService.loadOrdenenById(res.idpedido)
         .subscribe((getOrden: any) => {
           getOrden.new = true;
@@ -133,7 +133,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
         _pedidoFind.position_now_repartidor = data.position_now;
       }
 
-      console.log('pedido aceptado', data);
+      // console.log('pedido aceptado', data);
 
       // para que actualize en mapa
       this.listenService.setNotificaNuevoPedido(_pedidoFind);
@@ -145,7 +145,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
     this.socketService.onRepartidorNotificaFinPedido()
     .pipe(takeUntil(this.destroy$))
     .subscribe((pedido: any) => {
-      console.log('onRepartidorNotificaFinPedido', pedido);
+      // console.log('onRepartidorNotificaFinPedido', pedido);
 
       // detener tiempo pedido
       const _pedidoFind = this.findListaOrdenById(pedido.idpedido);
@@ -169,7 +169,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   private xloadOrdenesPendientes(fitro: string): void {
     this.comercioService.loadOrdenesPendientes(fitro)
     .subscribe((res: any) => {
-      console.log(res);
+      // console.log(res);
       this.listOrdenes = res;
 
       this.cantidadOrdenes = this.listOrdenes.length;
@@ -256,7 +256,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   }
 
   private filtrarOrdenes(opcion: any) {
-    console.log('opcion.filtro', opcion.filtro);
+    // console.log('opcion.filtro', opcion.filtro);
     this.xloadOrdenesPendientes(opcion.filtro);
   }
 
@@ -404,11 +404,11 @@ export class OrdenesComponent implements OnInit, OnDestroy {
     }
 
 
-    console.log('this.listMetodoPagoInformativo', this.listMetodoPagoInformativo);
+    // console.log('this.listMetodoPagoInformativo', this.listMetodoPagoInformativo);
   }
 
   openDialogOrdenFromInformativo(row: any) {
-    console.log('row', row);
+    // console.log('row', row);
     this.openDialogOrden(this.findListaOrdenById(row.idpedido));
   }
 

@@ -124,7 +124,7 @@ export class MipedidoService {
       }
 
       // this.laCartaObjSource.next(this.objCarta);
-      console.log('objCartaCarta', this.objCarta);
+      // console.log('objCartaCarta', this.objCarta);
     // }, 1000);
   }
 
@@ -252,9 +252,9 @@ export class MipedidoService {
 
     this.socketService.emit('itemModificado', item);
 
-    console.log('listItemsPedido', this.listItemsPedido);
-    console.log('itemModificado en add', item);
-    console.log('itemModificado en add', JSON.stringify(item));
+    // console.log('listItemsPedido', this.listItemsPedido);
+    // console.log('itemModificado en add', item);
+    // console.log('itemModificado en add', JSON.stringify(item));
 
     this.listenStatusService.setHayPedidoPendiente(true);
 
@@ -467,10 +467,10 @@ export class MipedidoService {
   addItemInCarta(newItem: any) {
     const newItemFind = this.findItemCarta(newItem);
     if ( newItemFind ) { // update
-      console.log('update');
+      // console.log('update');
       newItemFind.cantidad = newItemFind.cantidad;
     } else { // agrega a la carta
-      console.log('add in carta');
+      // console.log('add in carta');
       this.objCarta.carta.map((cat: CategoriaModel) => {
         cat.secciones
           .filter((sec: SeccionModel) => sec.idseccion === newItem.idseccion )
@@ -481,7 +481,7 @@ export class MipedidoService {
     }
 
     // this.laCartaObjSource.next(this.objCarta.carta);
-    console.log('item new add in carta', this.objCarta.carta);
+    // console.log('item new add in carta', this.objCarta.carta);
   }
 
   // actualizar las cantidades despues de connectar
@@ -800,7 +800,7 @@ export class MipedidoService {
     if ( this.miPedido.tipoconsumo.length === 0 ) {
       this.miPedido = new PedidoModel();
 
-      console.log('mi pedido clear', this.miPedido);
+      // console.log('mi pedido clear', this.miPedido);
       this.miPedidoSource.next(this.miPedido);
       return;
     }
@@ -821,7 +821,7 @@ export class MipedidoService {
       return tpc;
     });
 
-    console.log('mi pedido clear', this.miPedido);
+    // console.log('mi pedido clear', this.miPedido);
     this.miPedidoSource.next(this.miPedido);
 
   }
@@ -1294,7 +1294,7 @@ export class MipedidoService {
 
     arrSubtotales.push(_arrSubtotales);
 
-    console.log('totales', arrSubtotales);
+    // console.log('totales', arrSubtotales);
     return  arrSubtotales;
 
   }

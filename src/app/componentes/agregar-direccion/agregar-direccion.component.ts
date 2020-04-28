@@ -194,7 +194,7 @@ export class AgregarDireccionComponent implements OnInit {
             this.saveDireccionOk.emit(this.dataCliente);
           }, 500);
         }, 1000);
-        console.log(res);
+        // console.log(res);
       });
   }
 

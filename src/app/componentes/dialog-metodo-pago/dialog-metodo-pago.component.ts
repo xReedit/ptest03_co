@@ -39,7 +39,7 @@ export class DialogMetodoPagoComponent implements OnInit {
 
     this.listMetodoPago.push(<MetodoPagoModel>{'idtipo_pago': 2, 'descripcion': 'Tarjeta', 'checked': true});
     this.listMetodoPago.push(<MetodoPagoModel>{'idtipo_pago': 1, 'descripcion': 'Efectivo', 'checked': false});
-    console.log(this.listMetodoPago);
+    // console.log(this.listMetodoPago);
   }
 
   private verificarMetodoInit() {
@@ -80,7 +80,7 @@ export class DialogMetodoPagoComponent implements OnInit {
 
   private verificarValidForm() {
     this.formValid = this.itemSelected.idtipo_pago === 2 ? true : this.importeValid;
-    console.log('verificado pago', this.formValid);
+    // console.log('verificado pago', this.formValid);
   }
 
   cerrarDlg(): void {

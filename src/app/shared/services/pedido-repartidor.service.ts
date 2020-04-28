@@ -281,7 +281,7 @@ export class PedidoRepartidorService {
 
     this.crudService.postFree(_dataSend, 'repartidor', 'set-fin-pedido-entregado')
       .subscribe(res => {
-        console.log(res);
+        // console.log(res);
         this.cleanLocal();
         this.router.navigate(['./repartidor/pedidos']);
       });

@@ -34,7 +34,7 @@ export class PedidosComponent implements OnInit, OnDestroy {
     this.efectivoMano = this.infoTokenService.infoUsToken.efectivoMano;
     this.listenService.setEfectivoMano(this.efectivoMano);
 
-    console.log('this.infoTokenService.infoUsToken', this.infoTokenService.infoUsToken);
+    // console.log('this.infoTokenService.infoUsToken', this.infoTokenService.infoUsToken);
 
     // this.listPedidos = new PedidoRepartidorModel[0];
     this.listenPedidos();
@@ -74,8 +74,8 @@ export class PedidosComponent implements OnInit, OnDestroy {
 
       this.pedidoRepartidorService.setLocal(pedido);
 
-      console.log('nuevo pedido resivido', res);
-      console.log('nuevo pedido resivido', pedido);
+      // console.log('nuevo pedido resivido', res);
+      // console.log('nuevo pedido resivido', pedido);
       this.addPedidoToList(pedido);
       // this.listPedidos.push(pedido);
     });
@@ -91,18 +91,18 @@ export class PedidosComponent implements OnInit, OnDestroy {
     this.pedidoRepartidorService.setLocal(pedido);
     this.listPedidos.push(pedido);
 
-    console.log(pedido);
+    // console.log(pedido);
     this.pedidoRepartidorService.playAudioNewPedido();
   }
 
   aceptaPedido() {
-    console.log('pedido acetpado');
+    // console.log('pedido acetpado');
     // this.router.navigate(['/', 'indicaciones']);
     this.router.navigate(['./repartidor/indicaciones']);
   }
 
   clickTab($event: any) {
-    console.log('$event.index', $event.index);
+    // console.log('$event.index', $event.index);
     this._tabIndex = $event.index;
   }
 

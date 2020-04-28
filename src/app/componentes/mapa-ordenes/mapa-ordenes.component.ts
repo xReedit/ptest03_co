@@ -93,8 +93,8 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
     if ( !this.listaPedidos ) {return; }
     // this.listaPedidos = this.listaPedidos;
     this.addMarkerPedidos();
-    console.log('cambios en listaPediods', this.listaPedidos);
-    console.log('cambios en listaRepartidoresRed', this.listaRepartidoresRed);
+    // console.log('cambios en listaPediods', this.listaPedidos);
+    // console.log('cambios en listaRepartidoresRed', this.listaRepartidoresRed);
     // console.log('cambios en list', this.listaPedidos);
   }
 
@@ -117,7 +117,7 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
       }
     };
 
-    console.log('markerComercio', this.markerComercio);
+    // console.log('markerComercio', this.markerComercio);
   }
 
   private listenSockets(): void {
@@ -140,7 +140,7 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
     .pipe(takeUntil(this.destroy$))
     .subscribe((getOrden: any) => {
       if ( !getOrden ) {return; }
-        console.log('nuevo pedido listen service', getOrden);
+        // console.log('nuevo pedido listen service', getOrden);
         // this.listaPedidos.push(getOrden);
         this.addMarkerPedidos();
     });
@@ -152,7 +152,7 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
 
         if ( !pedido ) {return; }
 
-        console.log('Cambiamos icono');
+        // console.log('Cambiamos icono');
 
         // buscar pedido en los marcadores
         // const p = this.markersPedidos.filter(_p => _p.idpedido === pedido.idpedido)[0];
@@ -182,7 +182,7 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
   private loadRepartidoresComercio(): void {
     this.comercioService.loadRepartidoresComercio()
       .subscribe(res => {
-        console.log(res);
+        // console.log(res);
         this.listRepartidores = res;
         this.addMarkerRepartidor();
       });

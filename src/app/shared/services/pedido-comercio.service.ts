@@ -58,7 +58,7 @@ export class PedidoComercioService {
 
     this.crudService.postFree(_dataSend, 'comercio', 'set-estado-pedido')
       .subscribe(res => {
-        console.log(res);
+        console.log('.');
       });
 
     return getEstado;
@@ -122,7 +122,7 @@ export class PedidoComercioService {
 
   // quitamos servicio delivery y propina del subtotal
   darFormatoSubTotales(arrTotales: any = null) {
-    console.log(arrTotales);
+    // console.log(arrTotales);
     const rowTotal = arrTotales[arrTotales.length - 1];
     // -2 = servicio deliver -3 = propina
     rowTotal.importe = arrTotales.filter(x => x.id !== -2 && x.id !== -3 && x.descripcion !== 'TOTAL').map(x => parseFloat(x.importe)).reduce((a, b) => a + b, 0);
@@ -136,7 +136,7 @@ export class PedidoComercioService {
 
     this.crudService.postFree(_dataSend, 'comercio', 'set-repartidor-to-pedido')
     .subscribe(res => {
-      console.log(res);
+      console.log('.');
     });
   }
 

@@ -26,8 +26,8 @@ export class CompPedidoDetalleComponent implements OnInit {
   }
 
   private loadPedido() {
-    console.log('this.infoPedido', this.infoPedido);
-    console.log('infoPedido componente', this.infoPedido);
+    // console.log('this.infoPedido', this.infoPedido);
+    // console.log('infoPedido componente', this.infoPedido);
     // const _data = {
     //   mesa: 0,
     //   idsede: this.infoPedido.idsede,

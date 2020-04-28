@@ -130,7 +130,7 @@ export class ComFacturadorComponent implements OnInit {
     this.crudService.postFree(dataSend, 'consulta', 'dni-ruc', true)
       .subscribe((res: any) => {
         this.datosConsulta = res.data;
-        console.log(this.datosConsulta);
+        // console.log(this.datosConsulta);
         this.loadConsulta = false;
         this.isTieneCliente = this.datosConsulta.nombres !== '';
         this.comprobarRequeridos();

@@ -140,7 +140,7 @@ export class NavigatorLinkService {
   managerGoBack(previusUrl: string, nexturl: string) {
     // const _url = this.lastUrlHistory;
     let _pageActive = '';
-    console.log('managerGoBack', previusUrl);
+    // console.log('managerGoBack', previusUrl);
     switch (previusUrl) {
       case 'carta-i-secciones-items':
         _pageActive = 'carta';
@@ -153,7 +153,7 @@ export class NavigatorLinkService {
       case 'carta-i-':
         _pageActive = 'carta-o-';
         this.addLink('carta-o-');
-        console.log('=========================== listo para salir');
+        // console.log('=========================== listo para salir');
         this.listoParaSalir();
         break;
       // case 'carta-o':

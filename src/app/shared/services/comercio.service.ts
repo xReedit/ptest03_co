@@ -39,7 +39,7 @@ export class ComercioService {
 
   loadOrdenesPendientes(_filtro: string) {
     const _dataFiltro = { filtro: _filtro };
-    console.log(_dataFiltro);
+    // console.log(_dataFiltro);
     return new Observable(observer => {
     this.crudService.postFree(_dataFiltro, 'comercio', 'get-pedidos-pendientes')
       .subscribe((res: any) => {

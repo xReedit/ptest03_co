@@ -53,7 +53,7 @@ export class DialogVerificarTelefonoComponent implements OnInit {
           this.loader = this.isVerificacionOk ? 2 : 3;
           this.data.verificado = this.isVerificacionOk;
           // this.loader = 2;s
-          console.log(res);
+          // console.log(res);
           setTimeout(() => {
             this.cerrarDlg();
           }, 1000);

@@ -49,7 +49,7 @@ export class ComRegistrarPagoComponent implements OnInit {
 
       this.crudService.postFree(_dataSend, 'comercio', 'set-registrar-pago-pedido-comercio')
       .subscribe(res => {
-        console.log('registrarPago', res);
+        // console.log('registrarPago', res);
 
         const _dataPedido = {
           idpedido: this.orden.idpedido,

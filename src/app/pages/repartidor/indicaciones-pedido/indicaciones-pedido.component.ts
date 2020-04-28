@@ -107,7 +107,7 @@ export class IndicacionesPedidoComponent implements OnInit, OnDestroy {
       // si paso 1 verificar si se acerca al coordenadas destino y activar boton accion
       this.geoPositionActual = res;
       const isLLego = this.calcDistanciaService.calcDistancia(this.geoPositionActual, this.coordenadasDestino);
-      console.log('distancia listen llego ?', isLLego);
+      // console.log('distancia listen llego ?', isLLego);
 
       // enviar posicion
       const _data = {
@@ -129,7 +129,7 @@ export class IndicacionesPedidoComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(res => {
         // lanzar calificacion al cliente
-        console.log('fin del pedido idrepartidor', res);
+        // console.log('fin del pedido idrepartidor', res);
         this.openDialogCalificacion();
       });
   }
@@ -170,7 +170,7 @@ export class IndicacionesPedidoComponent implements OnInit, OnDestroy {
   private showPasos(): void {
     this.dataPedido.paso_va = this.dataPedido.paso_va ? this.dataPedido.paso_va : 1;
 
-    console.log(this.dataPedido);
+    // console.log(this.dataPedido);
     switch (this.dataPedido.paso_va) {
       case 1 || null:
         this.coordenadasDestino.latitude = this.dataPedido.datosComercio.latitude;

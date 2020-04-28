@@ -27,7 +27,7 @@ export class MapaSoloComponent implements OnInit {
 
   ngOnInit() {
     this.coordenadas.zoom = 15;
-    console.log('mapa solo', this.coordenadas);
+    // console.log('mapa solo', this.coordenadas);
   }
 
 

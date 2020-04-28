@@ -99,7 +99,7 @@ export class FacturacionElectronicaService {
 
     this.crudService.postFree(dataSend, 'service', 'facturacion-e')
       .subscribe(res => {
-        console.log(res);
+        // console.log(res);
 
         const dataPedido = { idpedido: _idpedido };
         this.crudService.postFree(dataPedido, 'comercio', 'set-pwa-facturado').subscribe((resp: any) => {});
