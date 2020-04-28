@@ -103,6 +103,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
         .subscribe((getOrden: any) => {
           getOrden.new = true;
           this.listOrdenes.push(getOrden);
+          this.darFormatoOrden();
 
           this.listenService.setNotificaNuevoPedido(getOrden);
 
@@ -183,7 +184,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
   private darFormatoOrden(): void {
     this.listOrdenes.map( (z: any) => {
-      z.json_datos_delivery = JSON.parse(z.json_datos_delivery);
+      z.json_datos_delivery =  typeof z.json_datos_delivery === 'object' ? z.json_datos_delivery : JSON.parse(z.json_datos_delivery);
       z.estadoTitle = this.pedidoComercioService.getEstadoPedido(z.pwa_estado).estadoTitle;
       z.json_datos_delivery.p_subtotales = this.pedidoComercioService.darFormatoSubTotales(z.json_datos_delivery.p_subtotales);
       z.visible = true;
