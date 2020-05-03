@@ -4,18 +4,32 @@
         <div>
             <p class="fw-600">Pedido #{{orden.idpedido}}</p>
             <div class="fs-13">
-                <p><i class="fa fa-motorcycle" aria-hidden="true"></i> Repartidor: {{ nomRepartidor || 'No asignado' }}</p>
-                <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplateNoRepartidores">
-                    <mat-form-field *ngIf="orden.pwa_delivery_status !== '4'"> 
-                        <mat-select [(value)]="repartidorSelected" (selectionChange)="saveRepartidor($event)">
-                          <mat-option *ngFor="let item of listRepartidoresPropios" [value]="item.idrepartidor">{{ item.nombre }}</mat-option>                          
-                        </mat-select>
-                      </mat-form-field>
+
+                <ng-container *ngIf="orden.isClientePasaRecoger; else elseConRepartidor">
+                    <div class="bg-warning rounded">
+                        <i class="fa fa-user p-1"></i>
+                        <span>Cliente Recoge</span>
+                    </div>
+                    <span class="text-success" [ngClass]="{'text-danger': isRepartidorPaga}">{{ descripcionComoClienteRecoge }}</span>
                 </ng-container>
-                <ng-template #elseTemplateNoRepartidores>                                        
-                    <p *ngIf="nomRepartidor"><i class="fa fa-phone" aria-hidden="true"></i> {{ orden.telefono_repartidor }} </p>
-                    <p class="text-success" [ngClass]="{'text-danger': isRepartidorPaga}">{{ descripcionComoPagaRepartidor }}</p>
+                <ng-template #elseConRepartidor>
+
+                    <p><i class="fa fa-motorcycle" aria-hidden="true"></i> Repartidor: {{ nomRepartidor || 'No asignado' }}</p>
+                    <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplateNoRepartidores">
+                        <mat-form-field *ngIf="orden.pwa_delivery_status !== '4'"> 
+                            <mat-select [(value)]="repartidorSelected" (selectionChange)="saveRepartidor($event)">
+                              <mat-option *ngFor="let item of listRepartidoresPropios" [value]="item.idrepartidor">{{ item.nombre }}</mat-option>                          
+                            </mat-select>
+                          </mat-form-field>
+                    </ng-container>
+                    <ng-template #elseTemplateNoRepartidores>                                        
+                        <p *ngIf="nomRepartidor"><i class="fa fa-phone" aria-hidden="true"></i> {{ orden.telefono_repartidor }} </p>
+                        <p class="text-success" [ngClass]="{'text-danger': isRepartidorPaga}">{{ descripcionComoPagaRepartidor }}</p>
+                    </ng-template>
+
                 </ng-template>
+                
+
                 
             </div>
             <!-- <button *ngIf="!isTieneRepartidor && !isRepartidoresPropios">Buscar Repartidor</button> -->

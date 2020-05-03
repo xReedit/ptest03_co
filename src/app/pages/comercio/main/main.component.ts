@@ -5,6 +5,7 @@ import { SocketService } from 'src/app/shared/services/socket.service';
 import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main',
@@ -18,12 +19,28 @@ export class MainComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private socketService: SocketService,
-    private comercioService: ComercioService
+    private comercioService: ComercioService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.socketService.connect();
     this.listenDatosSede();
+
+    // al entrar manda online al ingresar automaticamente
+    this.comercioService.guardarEstadoOnline(1);
+
+    // listen close page
+    // window.onbeforeunload = function() {
+    //   alert('Al cerrar dejara de recibir pedidos.');
+    // };
+
+    window.addEventListener('beforeunload', function (e) {
+      const confirmationMessage = 'Al cerrar dejara de recibir pedidos.';
+
+      (e || window.event).returnValue = confirmationMessage;
+      return confirmationMessage;
+    });
   }
 
   ngOnDestroy(): void {
@@ -51,5 +68,15 @@ export class MainComponent implements OnInit, OnDestroy {
       this.comercioService.loadDatosTipoPago();
     });
   }
+
+
+  cerrarSession() {
+    this.comercioService.guardarEstadoOnline(0);
+    this.socketService.closeConnection();
+    this.router.navigate(['../']);
+  }
+
+
+
 
 }

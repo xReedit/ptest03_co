@@ -225,6 +225,11 @@ export class MapaOrdenesComponent implements OnInit, OnDestroy, OnChanges {
 
   // ordenes o pedidos
   private addMarkerPedidos(): void {
+    if ( !this.dataComercio ) {
+      this.comercioService.getSedeInfo();
+    this.dataComercio = this.comercioService.sedeInfo;
+    }
+
     const isGetRepartidoresFromPedidos = this.dataComercio.pwa_delivery_servicio_propio === 0;
     this.listaRepartidoresRed = [];
     let rowAddRepartidor: any = {};

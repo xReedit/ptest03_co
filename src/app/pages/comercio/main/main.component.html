@@ -1,21 +1,36 @@
 <mat-drawer-container class="example-container">
     <mat-drawer #drawerIzq class="example-sidenav" mode="over" [opened]="showPanelLeft" (closedStart)="showPanelLeft=false">
-        <div>
-            <div class="p-3">
-                <span class="fw-600"><i class="fa fa-arrow-left pr-2" (click)="drawerIzq.toggle()"></i> Opciones del sistema</span>
-            </div>      
-            <hr>
-            <div>
-                <div matRipple class="xCursor border-bottom p-3" [routerLink]="['ordenes', 'lista']" (click)="drawerIzq.toggle()">
+
+
+        <div style="min-width: 250px;">
+            <div class="p-3 border-bottom">
+              <div class="w-100 text-center">
+                <img src="assets/icons/icon-72x72.png">
+                <p class="pt-1 fw-600 fs-12 text-secondary m-0">Papaya Comercio</p>
+                <p class="pt-1 fw-100 fs-11 text-secondary m-0">papaya.com.pe</p>
+              </div>            
+            </div>                
+            <div class="p-3 border-bottom w-100" (click)="drawerIzq.toggle()">
+              <span class="fw-600 fs-13"><i class="fa fa-arrow-left pr-2"></i>Opciones</span>
+            </div>
+            <div class="fs-13">
+                <div matRipple class="border-bottom p-3 xCursor" [routerLink]="['ordenes', 'lista']" (click)="drawerIzq.toggle();">
                     <i class="fa fa-paper-plane pr-2"></i>
-                    <span> Pedidos en el panel </span>                    
+                    Pedidos en el panel 
                 </div>
-                <div matRipple class="xCursor border-bottom p-3" [routerLink]="['ordenes', 'maps']" (click)="drawerIzq.toggle()">
-                    <i class="fa fa-map-signs pr-2"></i>
-                    <span> Pedidos en el mapa</span>                                        
+                <div matRipple class="border-bottom p-3 xCursor" [routerLink]="['ordenes', 'maps']" (click)="drawerIzq.toggle();">
+                    <i class="fa fa-amp pr-2"></i>
+                    Pedidos en el mapa
+                </div>
+                <div matRipple class="border-bottom p-3 xCursor" (click)="cerrarSession();">
+                    <i class="fa fa-close pr-2"></i>
+                    <span> Cerrar Sesion</span><br>
+                    <span class="text-info fs-11">Al cerrar dejara de recibir pedidos.</span> 
                 </div>
             </div>
         </div>
+
+      
 
     </mat-drawer>
 

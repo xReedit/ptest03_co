@@ -189,6 +189,8 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       z.json_datos_delivery.p_subtotales = this.pedidoComercioService.darFormatoSubTotales(z.json_datos_delivery.p_subtotales);
       z.visible = true;
       z.isTieneRepartidor = z.idrepartidor ? true : false;
+      z.isClientePasaRecoger = z.json_datos_delivery.p_header.arrDatosDelivery.pasoRecoger;
+      z.nom_repartidor = z.isClientePasaRecoger ? 'Cliente Recoge' : z.nom_repartidor;
 
       const minStart = z.tiempo ? z.tiempo : 0;
       z.color = minStart >= this.timepoMax ? 'r' : minStart >= this.timepoMedio ? 'a' : 'v';
@@ -196,6 +198,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
     });
 
   }
+
 
   private initTimerOrdenes(): void {
     this.timerRun = setInterval(() => {this.calcTimer(); }, 1000);

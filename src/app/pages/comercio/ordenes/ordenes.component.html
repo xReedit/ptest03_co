@@ -45,24 +45,33 @@
                         <div class="c-header fs-13 p-3 border-bottom"
                             [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r'}">
                             <div class="text-left">
-                                <p class="fw-600">#{{item.idpedido}}</p>
-                                <p class="fs-12">
-                                    <ng-container *ngIf="item.isTieneRepartidor; else elseTemplate">
-                                        Asignado
-                                    </ng-container>
-                                    <ng-template #elseTemplate>
-                                        <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplate">
-                                            No asignado
-                                        </ng-container>
-                                        <ng-template #elseTemplate>
-                                            Repartidor...
-                                        </ng-template>                                                                    
-                                    </ng-template>
-                                    
-                                </p>
+                                <p class="fw-600 fs-15">#{{item.idpedido}}</p>                                
                             </div>
                             <div class="text-center">
                                 <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
+
+                                <p class="fs-11">                        
+                                    <ng-container *ngIf="item.isClientePasaRecoger; else elseConRepartidor">
+                                        <i class="fa fa-user p-1"></i>
+                                        <span>Cliente Recoge</span>
+                                    </ng-container>
+                                    <ng-template #elseConRepartidor>                                        
+                                        <ng-container *ngIf="item.isTieneRepartidor; else elseTemplate">
+                                            Asignado
+                                        </ng-container>
+                                        <ng-template #elseTemplate>
+                                            <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplate">
+                                                No asignado
+                                            </ng-container>
+                                            <ng-template #elseTemplate>
+                                                <span>Buscando Repartidor...</span>
+                                            </ng-template>                                                                    
+                                        </ng-template>
+                                    </ng-template>
+                                                
+                                    
+                                </p>
+
                             </div>
                             <div class="text-right">
                                 <!-- <p class="fw-600">{{ item.tiempo }}</p> -->
@@ -119,31 +128,39 @@
                                 <!-- [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r'}" -->
                                 <div class="c-header fs-13 p-3 border-bottom">
 
-                                    <div class="text-center">
-                                        <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
-                                    </div>
                                     <div class="text-left">
-                                        <p class="fw-600">#{{item.idpedido}}</p>
-                                        <p class="fs-12">
-                                            <ng-container *ngIf="item.isTieneRepartidor; else elseTemplate">
-                                                Asignado
-                                            </ng-container>
-                                            <ng-template #elseTemplate>
-                                                <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplate">
-                                                    No asignado
-                                                </ng-container>
-                                                <ng-template #elseTemplate>
-                                                    Repartidor...
-                                                </ng-template>                                                                    
-                                            </ng-template>
-                                            
-                                        </p>
-                                    </div>                                
+                                        <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
+                                        <p class="fw-600 fs-15">#{{item.idpedido}}</p>                                                                                
+                                    </div>
+
                                     <div class="text-right">
                                         <p class="fw-600 badge" style="font-size: 14px !important;" [ngClass]="{'badge-success': item.color === 'v', 'badge-warning': item.color === 'a', 'badge-danger': item.color === 'r'}">
                                             {{ item.tiempo }} {{ item.labelMinTiempo }}
                                         </p>
                                         <p class="fs-12">{{ item.estadoTitle }}</p>
+
+                                        <p class="fs-11">                        
+                                            <ng-container *ngIf="item.isClientePasaRecoger; else elseConRepartidor">
+                                                <i class="fa fa-user p-1"></i>
+                                                <span>Cliente Recoge</span>
+                                            </ng-container>
+                                            <ng-template #elseConRepartidor>                                        
+                                                <ng-container *ngIf="item.isTieneRepartidor; else elseTemplate">
+                                                    Asignado
+                                                </ng-container>
+                                                <ng-template #elseTemplate>
+                                                    <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplate">
+                                                        No asignado
+                                                    </ng-container>
+                                                    <ng-template #elseTemplate>
+                                                        <span>Buscando Repartidor...</span>
+                                                    </ng-template>                                                                    
+                                                </ng-template>
+                                            </ng-template>
+                                                        
+                                            
+                                        </p>
+
                                     </div>
                                 </div>                
             

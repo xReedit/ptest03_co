@@ -25,6 +25,7 @@ export class CompOrdenDetalleComponent implements OnInit {
   isRepartidorPaga = true; // si el repartidor va a pagar o ya el pedido esta pagado
   nomRepartidor = null;
   descripcionComoPagaRepartidor = '';
+  descripcionComoClienteRecoge = ''; // si el cliente recoge
   _tabIndex = 0; // 0 todo el pedido 1 facturacion 2 registro de pago
 
   // si tiene habilitado facturacion
@@ -50,6 +51,7 @@ export class CompOrdenDetalleComponent implements OnInit {
     this.comercioService.getSedeInfo();
     this.isRepartidorPaga = this.orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago !== 2;
     this.descripcionComoPagaRepartidor = this.isRepartidorPaga ? 'El Repartidor tiene que pagar el pedido' : 'Pedido pagado. Repartidor NO paga.';
+    this.descripcionComoClienteRecoge = this.isRepartidorPaga ? `Y paga el pedido con: ${this.orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.descripcion}.` : 'Pedido pagado. Cliente NO paga.';
     this.isFacturacionActivo = this.comercioService.sedeInfo.facturacion_e_activo === 1;
 
     this.nomRepartidor = this.orden.idrepartidor ? this.orden.nom_repartidor + ' ' + this.orden.ap_repartidor : null;
@@ -73,7 +75,8 @@ export class CompOrdenDetalleComponent implements OnInit {
 
   private getEstadoPedido(): void {
     const getEstado = this.pedidoComercioService.getEstadoPedido(this.orden.pwa_estado);
-    this.btnActionTitule = getEstado.btnTitulo;
+    // this.btnActionTitule = getEstado.btnTitulo;
+    this.btnActionTitule = getEstado.btnTitulo === 'Entregar al repartidor' && this.orden.isClientePasaRecoger ? 'Entregar al cliente' : getEstado.btnTitulo;
     this.orden.pwa_estado = getEstado.estado;
     this.orden.estadoTitle = getEstado.estadoTitle;
   }
@@ -81,7 +84,7 @@ export class CompOrdenDetalleComponent implements OnInit {
   setEstadoOrden(): void {
     this.loaderEstado = true;
     const getEstado = this.pedidoComercioService.setEstadoPedido(this.orden.idpedido, this.orden.pwa_estado);
-    this.btnActionTitule = getEstado.btnTitulo;
+    this.btnActionTitule = getEstado.btnTitulo === 'Entregar al repartidor' && this.orden.isClientePasaRecoger ? 'Entregar al cliente' : getEstado.btnTitulo;
     this.orden.pwa_estado = getEstado.estado;
     this.orden.estadoTitle = getEstado.estadoTitle;
 

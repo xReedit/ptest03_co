@@ -13,7 +13,7 @@ export class ToolBarRepartidorComponent implements OnInit {
   @Output() public changeTogle = new EventEmitter<boolean>(false);
   @Output() public openMenuLateral = new EventEmitter<boolean>(false);
 
-  isTogleActive = false;
+  isTogleActive = true;
   dataSede: any;
   constructor(
     private infoTokenService: InfoTockenService,
@@ -23,9 +23,10 @@ export class ToolBarRepartidorComponent implements OnInit {
 
   ngOnInit() {
     this.dataSede = this.comercioService.getSedeInfo();
+    this.infoTokenService.infoUsToken.isOnline = true;
     // console.log('this.dataSede', this.dataSede);
 
-    this.isTogleActive = this.infoTokenService.infoUsToken.isOnline;
+    // this.isTogleActive = this.infoTokenService.infoUsToken.isOnline;
     // this.changeTogle.emit(this.isTogleActive);
     // if ( this.isTogleActive ) {
     //   this.socketService.connect();

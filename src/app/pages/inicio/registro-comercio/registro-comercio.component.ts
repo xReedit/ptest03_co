@@ -89,6 +89,7 @@ export class RegistroComercioComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('aaa');
     this.crudService.getAll('comercio', 'get-categoria-registro', false, false, false)
       .subscribe((res: any) => {
         this.listCategoria = res.data[0].rpt;
