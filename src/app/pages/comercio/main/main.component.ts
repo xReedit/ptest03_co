@@ -6,6 +6,7 @@ import { Subject } from 'rxjs/internal/Subject';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
 import { Router } from '@angular/router';
+import { InfoTockenService } from 'src/app/shared/services/info-token.service';
 
 @Component({
   selector: 'app-main',
@@ -20,7 +21,8 @@ export class MainComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private socketService: SocketService,
     private comercioService: ComercioService,
-    private router: Router
+    private router: Router,
+    private infoTokenService: InfoTockenService
   ) { }
 
   ngOnInit(): void {
@@ -49,7 +51,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   comercioOnLine(value: boolean) {
-    if ( !value ) {return; }
+    if ( !value ) { this.comercioService.guardarEstadoOnline(0); return; }
     const _dialogConfig = new MatDialogConfig();
     _dialogConfig.disableClose = true;
     _dialogConfig.hasBackdrop = true;
@@ -70,11 +72,23 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
 
+  openServidorPrint() {
+    console.log('aa');
+    const _xdataOrg = {o: this.infoTokenService.infoUsToken.usuario.idorg, s: this.infoTokenService.infoUsToken.usuario.idsede };
+    const _xr = btoa(JSON.stringify(_xdataOrg));
+    const versionPrintServer = 'print-server';
+    const _urlPrintServver = 'http://appx.papaya.com.pe/' + versionPrintServer + '/print-server.html?o=' + _xr;
+    window.open(_urlPrintServver, 'Servidor de Impresion'); // produccion
+  }
+
   cerrarSession() {
     this.comercioService.guardarEstadoOnline(0);
     this.socketService.closeConnection();
     this.router.navigate(['../']);
   }
+
+
+
 
 
 

@@ -18,6 +18,7 @@ export class CompOrdenDetalleComponent implements OnInit {
   isRepartidoresPropios = false;
   btnActionTitule = 'Aceptar Pedido';
   loaderEstado = false;
+  loaderFacturacion = false;
 
   showFacturar = false; // cambia cunado da click en facturar
   isShowControlFacturador = false;
@@ -120,6 +121,10 @@ export class CompOrdenDetalleComponent implements OnInit {
 
   goFacturar() {
     this.showFacturar = true;
+    this.loaderFacturacion = true;
+    setTimeout(() => {
+      this.loaderFacturacion = false;
+    }, 1500);
   }
 
 

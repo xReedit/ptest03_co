@@ -1,8 +1,8 @@
 <div class="header-app p-3 d-flex justify-content-between">
-    <div class="text-truncate">
+    <div class="text-truncate" *ngIf="dataSede">
         <i class="fa fa-bars pr-2 xCursor" (click)="abrirMenuLateral()"></i>
         <span class="fs-14 fw-100 text-truncate">  
-            {{dataSede.nombre | titlecase}} | {{dataSede.ciudad | titlecase}}
+            {{dataSede.sedenombre | titlecase}} | {{dataSede.ciudad | titlecase}}
         </span>
     </div>
     <!-- <button [routerLink]="['ordenes', 'lista']" routerLinkActive="router-link-active" >orden</button>

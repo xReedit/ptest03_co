@@ -66,7 +66,8 @@
                     </button>
                 </ng-container>
                 <ng-template #elseTemplateFacturado>
-                    <i class="fa fa-check fa-2x text-success"></i>
+                    <i *ngIf="!loaderFacturacion" class="fa fa-check fa-2x text-success"></i>
+                    <i *ngIf="loaderFacturacion" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
                 </ng-template>                            
             </div>
         </div>

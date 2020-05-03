@@ -22,8 +22,12 @@ export class ToolBarRepartidorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataSede = this.comercioService.getSedeInfo();
-    this.infoTokenService.infoUsToken.isOnline = true;
+    // console.log('toll');
+    // setTimeout(() => {
+      this.dataSede = this.comercioService.getSedeInfo();
+      this.infoTokenService.infoUsToken.isOnline = true;
+    // }, 1500);
+
     // console.log('this.dataSede', this.dataSede);
 
     // this.isTogleActive = this.infoTokenService.infoUsToken.isOnline;

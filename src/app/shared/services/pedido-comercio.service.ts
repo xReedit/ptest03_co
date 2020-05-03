@@ -122,6 +122,10 @@ export class PedidoComercioService {
 
   // quitamos servicio delivery y propina del subtotal
   darFormatoSubTotales(arrTotales: any = null) {
+
+    // si tiene sus propios repartidores no da formato no quita nada
+    if ( this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1 ) { return arrTotales; }
+
     // console.log(arrTotales);
     const rowTotal = arrTotales[arrTotales.length - 1];
     // -2 = servicio deliver -3 = propina
