@@ -20,6 +20,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
 // import {MatSidenavModule} from '@angular/material/sidenav';
 // import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -46,6 +47,7 @@ import {MatTableModule} from '@angular/material/table';
     MatSelectModule,
     MatSidenavModule,
     MatTableModule,
+    MatPaginatorModule,
     // MatSidenavModule
     // MatTooltipModule
   ],
@@ -67,7 +69,8 @@ import {MatTableModule} from '@angular/material/table';
     MatSlideToggleModule,
     MatSelectModule,
     MatSidenavModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
     // MatSidenavModule
     // MatTooltipModule
   ]

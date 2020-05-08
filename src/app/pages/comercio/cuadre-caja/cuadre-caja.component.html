@@ -1,0 +1,267 @@
+<div class="animated fadeIn page-body">
+    <div class="p-3 border-bottom">
+        <p class="fw-100 fs-18 m-1">Resumen del dia</p>  
+    </div>    
+    <div class="row p-3 m-0">
+        <div class="col-md-4 text-center card-pedido">
+            <h3 class="text-secondary">{{numTotalPedidos}}</h3>
+            <span>Pedidos</span>            
+            <div class="text-center border-top p-2 mt-2">
+                <table class="w-100 fs-12">
+                    <tbody>
+                        <tr *ngFor="let item of pedidosXEstado">
+                            <td align="left">{{ item.value.descripcion }}</td>
+                            <td>{{ item.value.count | number: '2.' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- tipo pago -->
+        <div class="col-md-4 text-center card-pedido">
+            <h3 class="text-secondary">{{ importeTotalEnCaja | number: '.2' }}</h3>
+            <span>Registro en Caja</span>            
+            <div class="text-center border-top p-2 mt-2">
+                <table class="w-100 fs-12">
+                    <tbody>
+                        <tr *ngFor="let item of dataPedidoXTipoPago">
+                            <td align="left">{{ item.value.descripcion }} ({{ item.value.count | number: '2.' }}) </td>                            
+                            <td align="right">{{ item.value.importe | number: '.2' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- Tiempo de atencion -->
+        <div class="col-md-4 text-center card-pedido">
+            <h3 class="text-secondary">{{ timepoPromedioEntrega | number: '2.0' }} <span class="fs-12">min</span></h3>
+            <span>Tiempo promedio de entrega</span>            
+            <div class="text-center border-top p-2 mt-2">
+                <div class="d-flex justify-content-between">
+                    <div class="text-center">
+                        <p class="text-success m-0">{{ tiempoMinEntrega | number: '2.' }}</p>
+                        <p class="fs-12 m-0"> Tiempo Minimo</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-danger m-0">{{ tiempoMaxEntrega | number: '2.' }}</p>
+                        <p class="fs-12 m-0"> Tiempo Maximo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <hr>
+
+    <div class="row m-0 p-3">
+        <!-- reparidores -->
+        <div class="col-md-6 card-pedido">
+            <div>
+                <span class="fw-600 fs-15">Pedidos por repartidor.</span>
+            </div>
+            <table class="table-model-1 w-100" mat-table [dataSource]="listPedidoXRepartidor">
+                <ng-container matColumnDef="repartidor">
+                    <th mat-header-cell *matHeaderCellDef>Repartidor</th>
+                    <td mat-cell *matCellDef="let element">
+                        <p class="fw-600"> {{ element.value.nom_repartidor | titlecase }}</p>
+                        <p class="text-secondary"><span class="fw-100">Telefono: </span>{{element.value.telefono}} </p>
+                        <p class="text-secondary"><span class="fw-100">Calificacion: </span>{{element.value.calificacion}} </p>
+                    </td>
+                </ng-container>                
+
+                <ng-container matColumnDef="num_pedidos">
+                    <th mat-header-cell *matHeaderCellDef>N° Pedidos</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.value.count | number: '2.' }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="importe">
+                    <th mat-header-cell *matHeaderCellDef>Imp. Total</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.value.importe | number: '.2' }}
+                    </td>
+                </ng-container>
+                
+                <ng-container matColumnDef="metodo">
+                    <th mat-header-cell *matHeaderCellDef>Metodo Pago</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div *ngFor="let metodo of element.value.metodoPago" class="mb-1"> 
+                            <p class="text-secondary">
+                                <span class="fw-600 badge" [ngClass]="{'badge-primary': metodo.idtipo_pago === 3, 'badge-info': metodo.idtipo_pago === 2, 'badge-secondary': metodo.idtipo_pago === 1}">
+                                    {{metodo.descripcion | titlecase }} : 
+                                </span> 
+                                <span class="text-secondary pl-1">{{metodo.num_pedidos | number: '2.' }}</span> </p>
+                            <p class="text-secondary"><span class="fw-600">Importe: </span> <span class="text-secondary">{{metodo.importe | number: '.2' }} </span> </p>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsReparidores"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsReparidores;"></tr>
+            </table>
+        </div>
+
+        <!-- Pagos con Tarjeta -->
+        <div class="col-md-6 card-pedido">
+            <div>
+                <span class="fw-600 fs-15">Pago con tarjeta desde la aplicación.</span>
+            </div>
+            <table *ngIf="dataPedidoPagadoTarjeta" class="table-model-1 w-100" mat-table [dataSource]="dataPedidoPagadoTarjeta">
+                <ng-container matColumnDef="cliente">
+                    <th mat-header-cell *matHeaderCellDef>Cliente</th>
+                    <td mat-cell *matCellDef="let element">
+                        <p class="fw-600"> {{ element.nom_cliente | titlecase }}</p>
+                        <p class="text-secondary"><span class="fw-100">Pedido: </span> #{{element.idpedido}} </p>                        
+                    </td>
+                </ng-container>                
+
+                <ng-container matColumnDef="tarjeta">
+                    <th mat-header-cell *matHeaderCellDef>Tarjeta</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.data_pago_pwa.brand}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="importe">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">Imp. Total</th>
+                    <td mat-cell *matCellDef="let element" align="right">
+                        {{ element.importe | number: '.2' }}
+                    </td>
+                </ng-container>                
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsPagoTarjeta"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsPagoTarjeta;"></tr>
+            </table>
+        </div>
+    </div>    
+    <hr>
+
+    <!-- productos mas vendidos -->    
+    <div class="row m-0 p-3">
+        <div class="col-12 card-pedido">
+            <div>
+                <span class="fw-600 fs-18">Top de productos.</span>
+            </div>
+            <table *ngIf="listResumenAll" class="table-model-1 w-100" mat-table [dataSource]="dataResumenAll">
+                <ng-container matColumnDef="n">
+                    <th mat-header-cell *matHeaderCellDef>#</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.n |  number: '2.' }}
+                    </td>
+                </ng-container>                
+
+                <ng-container matColumnDef="producto">
+                    <th mat-header-cell *matHeaderCellDef>Producto</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.des}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="seccion">
+                    <th mat-header-cell *matHeaderCellDef>Seccion</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.seccion}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="precio">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">Precio</th>
+                    <td mat-cell *matCellDef="let element" align="right">
+                        {{ element.precio_unitario | number: '.2'}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cantidad">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">Cantidad</th>
+                    <td mat-cell *matCellDef="let element" align="right">
+                        <span class="fw-600">{{ element.cantidad_seleccionada | number: '2.'}}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="importe">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">Imp. Total</th>
+                    <td mat-cell *matCellDef="let element" align="right">
+                        <span class="fw-600">{{ element.precio_total | number: '.2' }}</span>
+                    </td>
+                </ng-container>                
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsTopProducto"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsTopProducto;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" [hidePageSize]="true" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- todos los pedidos -->
+    <div class="row m-0 p-3">        
+        <div class="col-12 card-pedido">
+            <div>
+                <span class="fw-600 fs-18">Todos los pedidos.</span>
+            </div>
+            <table *ngIf="listResumenAll" class="table-model-1 w-100" mat-table [dataSource]="dataPedidosAll">
+                <ng-container matColumnDef="n">
+                    <th mat-header-cell *matHeaderCellDef>#</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.n |  number: '2.' }}
+                    </td>
+                </ng-container>                
+
+                <ng-container matColumnDef="pedido">
+                    <th mat-header-cell *matHeaderCellDef>Producto</th>
+                    <td mat-cell *matCellDef="let element">
+                        <p class="fw-600"> #{{ element.idpedido }}</p>
+                        <p class="fw-100 text-secondary"> {{ element.fecha }} </p>
+                        <p class="fw-100 text-secondary"> {{ element.hora }}</p>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="cliente">
+                    <th mat-header-cell *matHeaderCellDef>Cliente</th>
+                    <td mat-cell *matCellDef="let element">
+                        <p> {{ element.referencia | titlecase }}</p>
+                        <p class="fw-100 text-secondary"> {{ element.json_datos_delivery.p_header.arrDatosDelivery.direccion }}</p>
+                        <p class="fw-100 text-secondary"> {{ element.json_datos_delivery.p_header.arrDatosDelivery.telefono }}</p>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="repartidor">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">Repartidor</th>
+                    <td mat-cell *matCellDef="let element">
+                        <ng-container *ngIf="element.json_datos_delivery.p_header.arrDatosDelivery.pasoRecoger; else elseTemplate">
+                            Cliente Recoge
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            {{ element.nom_repartidor | titlecase }}
+                        </ng-template>                                                
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="metodo_pago">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">Metodo Pago</th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="fw-600 badge" [ngClass]="{'badge-primary': element.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 3, 'badge-info': element.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 2, 'badge-secondary': element.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 1}">
+                            {{element.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.descripcion | titlecase }} : 
+                        </span> 
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="importe">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">Imp. Total</th>
+                    <td mat-cell *matCellDef="let element" align="right">
+                        <span class="fw-600">{{ element.total_r | number: '.2' }}</span>
+                    </td>
+                </ng-container>                
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsAllPedidos"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsAllPedidos;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" [hidePageSize]="true" showFirstLastButtons #paginatorPedido></mat-paginator>
+        </div>
+    </div>
+</div>

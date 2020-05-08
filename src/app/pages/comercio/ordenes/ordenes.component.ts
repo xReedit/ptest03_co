@@ -393,21 +393,10 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       _elMetodod.num_pedidos += 1;
       _elMetodod.importe += row.importe;
 
-      // metodo de pago
-      // const _metodo = _elMetodod.metodoPago.filter(m => m.idtipo_pago === row.metodoPago[0].idtipo_pago)[0];
-      // if ( _metodo ) {
-      //   _metodo.num_pedidos += 1;
-      //   _metodo.importe +=  row.metodoPago[0].importe;
-      // } else {
-      //   _elMetodod.metodoPago.push(row);
-      // }
-
     } else {
       this.listMetodoPagoInformativo.push(row);
     }
 
-
-    // console.log('this.listMetodoPagoInformativo', this.listMetodoPagoInformativo);
   }
 
   openDialogOrdenFromInformativo(row: any) {

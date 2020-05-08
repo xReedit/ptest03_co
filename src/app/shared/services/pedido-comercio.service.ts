@@ -4,6 +4,7 @@ import { ComercioService } from './comercio.service';
 import { SedeInfoModel } from 'src/app/modelos/sede.info.model';
 import { Observable } from 'rxjs/internal/Observable';
 import { SocketService } from './socket.service';
+import { PedidoRepartidorModel } from 'src/app/modelos/pedido.repartidor.model';
 
 
 

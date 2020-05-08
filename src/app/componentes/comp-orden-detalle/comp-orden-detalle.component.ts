@@ -101,7 +101,11 @@ export class CompOrdenDetalleComponent implements OnInit {
   private goFinalizarPedido() {
     switch (this.orden.pwa_estado) {
       case 'R':
-        this._tabIndex = 2; // a registrar
+        // si no tiene repartidores propios
+        // y si no recoge el cliente
+        if ( !this.isComercioPropioRepartidor || this.orden.isClientePasaRecoger) {
+          this._tabIndex = 2; // a registrar PAGO
+        }
         break;
       case 'A':
         this.closeWindow.emit(true); // manda cerrar dialog

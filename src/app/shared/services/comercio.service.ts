@@ -91,4 +91,16 @@ export class ComercioService {
       });
     });
   }
+
+
+  // load data cierre de caja
+  loadDataCierreCaja() {
+    return new Observable(observer => {
+    this.crudService.getAll('comercio', 'get-data-cierre-caja', false, false, true)
+      .subscribe((res: any) => {
+        observer.next(res.data);
+      });
+    });
+  }
+
 }

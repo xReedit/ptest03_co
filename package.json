@@ -29,6 +29,7 @@
     "@zxing/ngx-scanner": "^2.0.1",
     "angular-star-rating": "^4.0.0-beta.3",
     "core-js": "^2.5.4",
+    "crossfilter2": "^1.5.2",
     "css-star-rating": "^1.2.4",
     "dayjs": "^1.8.24",
     "geolocation-utils": "^1.2.2",

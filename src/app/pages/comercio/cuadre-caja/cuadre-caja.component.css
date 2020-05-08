@@ -1,0 +1,20 @@
+.page-body {
+    background: #eeeeee;
+}
+
+.card-pedido {
+    /* border: 1px solid #bdbdbd; */
+    border-radius: 15px;
+    padding: 15px;
+    background-color: white;
+    border: 8px solid #eeeeee;
+}
+
+.card-pedido-head {
+    align-items: center;
+    margin-bottom: 3px;
+}
+
+.card-pedido-body p {
+    margin: 0px;    
+}

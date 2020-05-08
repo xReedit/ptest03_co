@@ -5,6 +5,7 @@ import { OrdenesComponent } from './ordenes/ordenes.component';
 import { SeguimientoComponent } from './seguimiento/seguimiento.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OrdenesEnMapaComponent } from './ordenes-en-mapa/ordenes-en-mapa.component';
+import { CuadreCajaComponent } from './cuadre-caja/cuadre-caja.component';
 
 
 const routes: Routes = [{
@@ -28,6 +29,11 @@ const routes: Routes = [{
             path: 'dashboard',
             component: DashboardComponent,
             data: { titulo: 'Dashboard' }
+        },
+        {
+            path: 'resumen-dia',
+            component: CuadreCajaComponent,
+            data: { titulo: 'Resumen del Dia' }
         }
 
     ]
