@@ -6,7 +6,7 @@ import { InfoTockenService } from './info-token.service';
   providedIn: 'root'
 })
 export class TimerLimitService {
-
+  private count_interval = 1000; // 1 segundos
   private countdownTimerRef = null;
   private init = 0;
   public maxTime = 60; // 1min defult
@@ -96,14 +96,14 @@ export class TimerLimitService {
 
       lastValPorcentaje = this.valPorcentaje;
 
-    }, 1000);
+    }, this.count_interval);
   }
 
   private setTimeDate(): number {
     const ms_new = new Date().getTime();
     const timeAfter = localStorage.getItem('sys::tnum') ? parseInt(localStorage.getItem('sys::tnum'), 0) : ms_new;
     const ms = ms_new - timeAfter;
-    const sec = Math.floor((ms / 1000));
+    const sec = Math.floor((ms / this.count_interval));
 
     localStorage.setItem('sys::tnum', timeAfter.toString());
     return sec;

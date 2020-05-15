@@ -1,9 +1,10 @@
 <div class="w-100">
-    <img class="img-thumbnail w-100" src="{{url_img}}{{itemProducto.img}}" alt="{{itemProducto.img}}">
+    <img class="img-thumbnail" style="max-width: 500px;" src="{{url_img}}{{itemProducto.img}}" alt="{{itemProducto.img}}">
 </div>
 <div class="text-center fs-13 pt-2">    
-    <p>{{ itemProducto.des }}</p>
-    <p>Cantidad: {{ itemProducto.cantidad_seleccionada }}</p>
+    <p class="fw-600">{{ itemProducto.des }}</p>
+    <p class="text-secondary">{{ itemProducto.detalles }}</p>
+    <p class="fw-600">Cantidad: {{ itemProducto.cantidad_seleccionada }}</p>
 </div>
 <hr>
 

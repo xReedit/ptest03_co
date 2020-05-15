@@ -25,5 +25,6 @@ export class SedeInfoModel {
     datos_tipo_pago: any;
     latitude: number;
     longitude: number;
+    sufijo: string; // sufijo sede
 }
 

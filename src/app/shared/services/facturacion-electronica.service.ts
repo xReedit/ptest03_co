@@ -40,8 +40,9 @@ export class FacturacionElectronicaService {
   }
 
   // prepara los items a formato facturacion (es decir todos las secciones lo colaca en una)
-  xCargarDatosAEstructuraImpresion (pedido: PedidoModel): any {
-
+  // si el delivery es propio o tienes otro cobros por servicio o taper para llevar
+  // entonces esos item se adicionan al pedido como 'ADICIONALES' : 'SERVICIOS
+  xCargarDatosAEstructuraImpresion (pedido: PedidoModel, _substotales: any): any {
     let _arrRpt = [];
 
     pedido.tipoconsumo.map((element: any) => {
@@ -73,6 +74,39 @@ export class FacturacionElectronicaService {
       // _arrRpt[0][i] = element
       _arrRpt[0].items.push(element);
     });
+
+
+    // agreagar adicionales si los hay y los suma a subtotal
+    let cantAddSubtotal = 0;
+    _substotales.map(x => {
+        if (x.id === undefined) { return; } // id remplaza a tachado es decir no se aceptan subtotales
+        if (x.id === 0) { return; } // es el sub total cunado viene de papaya express
+        if (x.tachado === true) { return; }
+        if (x.esImpuesto === 1) { return; }
+
+        const seccion = x.id.toString().indexOf('a') >= 0 ? 'ADICIONALES' : 'SERVICIOS';
+        // const cantidad = x.cantidad ? x.cantidad : 1;
+        const _pUnitario = x.punitario ? parseFloat(x.punitario) : parseFloat(x.importe); // para calcular la cantidad cuando es por item // si este cobro es por pedido entonces el punitario es igual al total
+        const cantidad = parseFloat(x.importe) / _pUnitario;
+        const index = _arrRpt[0].items.length + 1; // en facturacion electronica el id debe ser numero
+
+        cantAddSubtotal = parseFloat(x.importe); // para aumentar al subtotal xArraySubTotales
+
+        _arrRpt[0].items.push({
+          id: index.toString(),
+          cantidad: cantidad,
+          des: x.descripcion.toUpperCase(),
+          punitario: _pUnitario,
+          precio_total: x.importe,
+          seccion: seccion
+        });
+    });
+
+    // actualiza subtotal
+    if ( cantAddSubtotal !== 0 ) {
+      cantAddSubtotal = parseFloat(_substotales[0].importe) + cantAddSubtotal;
+      _substotales[0].importe = cantAddSubtotal;
+    }
 
     return _arrRpt;
     // console.log('_arrRpt', _arrRpt);
@@ -106,6 +140,5 @@ export class FacturacionElectronicaService {
       });
 
   }
-
 
 }

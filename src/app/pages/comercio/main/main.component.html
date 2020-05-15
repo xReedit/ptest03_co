@@ -28,6 +28,11 @@
                     Resumen del dia.
                 </div>
 
+                <div matRipple class="border-bottom p-3 xCursor" [routerLink]="['repartidores']" (click)="drawerIzq.toggle();">
+                    <i class="fa fa-motorcycle pr-2"></i>
+                    Repartidores
+                </div>
+
 
                 <div matRipple class="border-bottom p-3 xCursor" (click)="openServidorPrint(); drawerIzq.toggle();">
                     <i class="fa fa-print pr-2" aria-hidden="true"></i>

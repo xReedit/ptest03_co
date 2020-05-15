@@ -55,7 +55,7 @@
     <div class="d-flex justify-content-between">
         <div class="fs-13">
             <span class="fs-13 fw-600 text-secondary">Facturarción: </span>
-            <p><strong>{{orden.json_datos_delivery.p_header.arrDatosDelivery.tipoComprobante.descripcion}} </strong> {{orden.json_datos_delivery.p_header.arrDatosDelivery.tipoComprobante.dni || ''}}   {{ orden.json_datos_delivery.p_header.arrDatosDelivery.tipoComprobante.otro_dato || 'Publico en general'}}</p>            
+            <p><strong>{{orden.json_datos_delivery.p_header.arrDatosDelivery.tipoComprobante.descripcion}} </strong> {{descripcionDetalleFacturacion}} </p>            
         </div>
 
         <div class="fs-13 text-right" *ngIf="isFacturacionActivo">

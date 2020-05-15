@@ -1,0 +1,35 @@
+<form #form="ngForm">
+
+    <h6>Repartidor</h6>
+    <hr>
+
+    <mat-form-field class="w-50">
+        <input matInput placeholder="Nombre" type="text" [(ngModel)]="repartidor.nombre" name="nombre" required>        
+    </mat-form-field>
+
+    <mat-form-field class="w-50">
+        <input matInput placeholder="Apellido" type="text" [(ngModel)]="repartidor.apellido" name="apellido" required>        
+    </mat-form-field>
+
+    <mat-form-field class="w-50">
+        <input matInput placeholder="DNI" type="number" [(ngModel)]="repartidor.dni" name="dni" required>        
+    </mat-form-field>
+
+    <mat-form-field class="w-50">
+        <input matInput placeholder="Telefono" type="number" [(ngModel)]="repartidor.telefono" name="telefono" required>        
+    </mat-form-field>    
+
+    <mat-form-field class="w-50">
+        <span matPrefix>{{ sufijo }} &nbsp;</span>
+        <input matInput placeholder="Usuario" type="text" [(ngModel)]="repartidor.usuario" name="usuario" required>        
+    </mat-form-field>
+
+    <mat-form-field class="w-50">
+        <input matInput placeholder="Clave" type="password" [(ngModel)]="repartidor.pass" name="pass" required>        
+    </mat-form-field>
+
+    <hr>
+    <button mat-flat-button color="primary" (click)="cerrarDlg()" [disabled]="!form.valid">Guardar</button>
+
+    <button mat-flat-button color="accent" class="ml-3" [mat-dialog-close]="false">Cerrar</button>
+</form>

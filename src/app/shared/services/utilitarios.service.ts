@@ -35,7 +35,7 @@ export class UtilitariosService {
     const minutos = difMin % 60; // minutos
     const difHs = Math.floor(difMin / 60);
     const horas = difHs % 24; // horas
-    return this.xCeroIzq(horas, 2) + ':' + this.xCeroIzq(minutos, 2) + ':' + this.xCeroIzq(segundos, 2);
+    return this.xCeroIzq(horas, 2) + ':' + this.xCeroIzq(minutos, 2);
 
     }
 

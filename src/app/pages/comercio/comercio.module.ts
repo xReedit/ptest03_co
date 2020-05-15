@@ -14,10 +14,11 @@ import { OrdenesComponent } from './ordenes/ordenes.component';
 import { NgxMasonryModule } from 'ngx-masonry';
 import { OrdenesEnMapaComponent } from './ordenes-en-mapa/ordenes-en-mapa.component';
 import { CuadreCajaComponent } from './cuadre-caja/cuadre-caja.component';
+import { MisRepartidoresComponent } from './mis-repartidores/mis-repartidores.component';
 
 @NgModule({
   declarations: [
-    MainComponent, RecepcionComponent, SeguimientoComponent, DashboardComponent, OrdenesComponent, OrdenesEnMapaComponent, CuadreCajaComponent],
+    MainComponent, RecepcionComponent, SeguimientoComponent, DashboardComponent, OrdenesComponent, OrdenesEnMapaComponent, CuadreCajaComponent, MisRepartidoresComponent],
   imports: [
     CommonModule,
     ComercioRoutingModule,

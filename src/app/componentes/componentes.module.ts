@@ -34,6 +34,7 @@ import { ComFacturadorComponent } from './com-facturador/com-facturador.componen
 import { ComRegistrarPagoComponent } from './com-registrar-pago/com-registrar-pago.component';
 import { ComResumenAllPedidosComponent } from './com-resumen-all-pedidos/com-resumen-all-pedidos.component';
 import { MapaOrdenesComponent } from './mapa-ordenes/mapa-ordenes.component';
+import { DialogAddRepartidorComponent } from './dialog-add-repartidor/dialog-add-repartidor.component';
 // import { DialogSelectDireccionComponent } from './dialog-select-direccion/dialog-select-direccion.component';
 
 @NgModule({
@@ -65,6 +66,7 @@ import { MapaOrdenesComponent } from './mapa-ordenes/mapa-ordenes.component';
     ComRegistrarPagoComponent,
     ComResumenAllPedidosComponent,
     MapaOrdenesComponent,
+    DialogAddRepartidorComponent,
     // DialogSelectDireccionComponent,
     // DialogUbicacionComponent
   ],

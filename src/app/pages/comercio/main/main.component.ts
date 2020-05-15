@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
 import { Router } from '@angular/router';
 import { InfoTockenService } from 'src/app/shared/services/info-token.service';
+import { CrudHttpService } from 'src/app/shared/services/crud-http.service';
 
 @Component({
   selector: 'app-main',
@@ -22,7 +23,8 @@ export class MainComponent implements OnInit, OnDestroy {
     private socketService: SocketService,
     private comercioService: ComercioService,
     private router: Router,
-    private infoTokenService: InfoTockenService
+    private infoTokenService: InfoTockenService,
+    private crudService: CrudHttpService
   ) { }
 
   ngOnInit(): void {
@@ -86,9 +88,6 @@ export class MainComponent implements OnInit, OnDestroy {
     this.socketService.closeConnection();
     this.router.navigate(['../']);
   }
-
-
-
 
 
 

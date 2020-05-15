@@ -6,6 +6,7 @@ import { SeguimientoComponent } from './seguimiento/seguimiento.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OrdenesEnMapaComponent } from './ordenes-en-mapa/ordenes-en-mapa.component';
 import { CuadreCajaComponent } from './cuadre-caja/cuadre-caja.component';
+import { MisRepartidoresComponent } from './mis-repartidores/mis-repartidores.component';
 
 
 const routes: Routes = [{
@@ -34,6 +35,11 @@ const routes: Routes = [{
             path: 'resumen-dia',
             component: CuadreCajaComponent,
             data: { titulo: 'Resumen del Dia' }
+        },
+        {
+            path: 'repartidores',
+            component: MisRepartidoresComponent,
+            data: { titulo: 'Repartidores' }
         }
 
     ]

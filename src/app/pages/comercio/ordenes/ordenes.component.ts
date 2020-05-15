@@ -201,7 +201,8 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
 
   private initTimerOrdenes(): void {
-    this.timerRun = setInterval(() => {this.calcTimer(); }, 1000);
+    this.calcTimer();
+    this.timerRun = setInterval(() => {this.calcTimer(); }, 15000);
   }
 
   private calcTimer(): void {

@@ -16,6 +16,7 @@ export class DialogImgItemComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) data: any,
   ) {
     this.itemProducto = data.item;
+    console.log(this.itemProducto);
   }
 
   ngOnInit() {

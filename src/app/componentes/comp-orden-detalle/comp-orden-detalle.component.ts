@@ -27,6 +27,7 @@ export class CompOrdenDetalleComponent implements OnInit {
   nomRepartidor = null;
   descripcionComoPagaRepartidor = '';
   descripcionComoClienteRecoge = ''; // si el cliente recoge
+  descripcionDetalleFacturacion = '';
   _tabIndex = 0; // 0 todo el pedido 1 facturacion 2 registro de pago
 
   // si tiene habilitado facturacion
@@ -44,7 +45,7 @@ export class CompOrdenDetalleComponent implements OnInit {
 
   ngOnInit(): void {
 
-    console.log('orden detalle', this.orden);
+    // console.log('orden detalle', this.orden);
     this.getEstadoPedido();
     // this.isTieneRepartidor = this.orden.repartidor ? true : false;
 
@@ -53,6 +54,8 @@ export class CompOrdenDetalleComponent implements OnInit {
     this.isRepartidorPaga = this.orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago !== 2;
     this.descripcionComoPagaRepartidor = this.isRepartidorPaga ? 'El Repartidor tiene que pagar el pedido' : 'Pedido pagado. Repartidor NO paga.';
     this.descripcionComoClienteRecoge = this.isRepartidorPaga ? `Y paga el pedido con: ${this.orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.descripcion}.` : 'Pedido pagado. Cliente NO paga.';
+    this.descripcionDetalleFacturacion = this.orden.json_datos_delivery.p_header.arrDatosDelivery.tipoComprobante.dni ? this.orden.json_datos_delivery.p_header.arrDatosDelivery.tipoComprobante.dni : 'Publico en general';
+    this.descripcionDetalleFacturacion = this.descripcionDetalleFacturacion + ' ' + (this.orden.json_datos_delivery.p_header.arrDatosDelivery.tipoComprobante?.otro_dato || '');
     this.isFacturacionActivo = this.comercioService.sedeInfo.facturacion_e_activo === 1;
 
     this.nomRepartidor = this.orden.idrepartidor ? this.orden.nom_repartidor + ' ' + this.orden.ap_repartidor : null;

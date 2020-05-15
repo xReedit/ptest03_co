@@ -172,7 +172,7 @@ export class ComFacturadorComponent implements OnInit {
 
   emitirFacturar() {
     const json_datos_delivery = this.orden.json_datos_delivery;
-    const items = this.facturacionService.xCargarDatosAEstructuraImpresion(json_datos_delivery.p_body);
+    const items = this.facturacionService.xCargarDatosAEstructuraImpresion(json_datos_delivery.p_body, json_datos_delivery.p_subtotales);
 
     this.datosConsulta.num_doc = this.datosConsulta.num_doc ? this.datosConsulta.num_doc : this.num_documento;
     console.log('items facturacion', items);
