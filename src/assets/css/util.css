@@ -27,7 +27,7 @@
 }
 
 body, html {
-	overflow: hidden;
+	/* overflow: hidden; */
 	height: 100%;
 	font-family: Ubuntu-Regular, sans-serif;
 

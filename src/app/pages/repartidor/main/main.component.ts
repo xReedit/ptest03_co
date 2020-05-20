@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DialogEfectivoRepartidorComponent } from 'src/app/componentes/dialog-efectivo-repartidor/dialog-efectivo-repartidor.component';
 import { SocketService } from 'src/app/shared/services/socket.service';
+import { NavigatorLinkService } from 'src/app/shared/services/navigator-link.service';
 
 @Component({
   selector: 'app-main',
@@ -12,7 +13,7 @@ export class MainComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private socketService: SocketService
+    private socketService: SocketService,
   ) { }
 
   ngOnInit() {

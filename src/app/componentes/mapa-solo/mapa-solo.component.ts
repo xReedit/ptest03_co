@@ -33,7 +33,6 @@ export class MapaSoloComponent implements OnInit {
 
   // solo en desarrollo
   markerDragEnd($event: any) {
-
     const _data = {
       coordenadas : {
         latitude: $event.coords.lat,

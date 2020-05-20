@@ -76,7 +76,8 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       this.showVistaLista = id === 'lista';
       });
 
-    this.xloadOrdenesPendientes(`'P', 'A'`);
+
+    // this.xloadOrdenesPendientes(`'P', 'A'`);
     this.listenSocket();
     this.comercioService.getSedeInfo();
     this.isComercioPropioRepartidor = this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1;
@@ -85,6 +86,8 @@ export class OrdenesComponent implements OnInit, OnDestroy {
     this.listBtnToolbar.push({descripcion: 'Pendientes', checked: true, filtro: `'P', 'A'`});
     this.listBtnToolbar.push({descripcion: ' Listos ', checked: false, filtro: `'D'`});
     this.listBtnToolbar.push({descripcion: ' Entregados ', checked: false, filtro: `'R', 'E'` });
+
+    this.optionChekListSelected = this.listBtnToolbar[0];
   }
 
   ngOnDestroy(): void {
@@ -94,11 +97,21 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   }
 
   private listenSocket(): void {
+    // console.log('=========');
+    this.socketService.isSocketOpen$.subscribe(result => {
+      if (result) {
+        // console.log('listen socket connetc');
+        this.listOrdenes = [];
+        this.xloadOrdenesPendientes(this.optionChekListSelected.filtro);
+      }
+    });
+
+
     // escuchar nuevo nuevo pedido
     this.socketService.onGetNuevoPedido()
     .pipe(takeUntil(this.destroy$))
     .subscribe((res: any) => {
-      // console.log('nuevo pedido', res);
+      console.log('nuevo pedido', res);
       this.comercioService.loadOrdenenById(res.idpedido)
         .subscribe((getOrden: any) => {
           getOrden.new = true;

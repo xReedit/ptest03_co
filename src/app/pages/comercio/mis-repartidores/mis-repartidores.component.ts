@@ -25,6 +25,7 @@ export class MisRepartidoresComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.infoTokenService.getInfoUs();
     this.loadRepartidores();
     console.log( 'comercioService', this.comercioService.getSedeInfo());
   }

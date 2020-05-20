@@ -8,6 +8,7 @@ import { ComercioService } from 'src/app/shared/services/comercio.service';
 import { Router } from '@angular/router';
 import { InfoTockenService } from 'src/app/shared/services/info-token.service';
 import { CrudHttpService } from 'src/app/shared/services/crud-http.service';
+import { NotificacionPushService } from 'src/app/shared/services/notificacion-push.service';
 
 @Component({
   selector: 'app-main',
@@ -24,7 +25,8 @@ export class MainComponent implements OnInit, OnDestroy {
     private comercioService: ComercioService,
     private router: Router,
     private infoTokenService: InfoTockenService,
-    private crudService: CrudHttpService
+    private crudService: CrudHttpService,
+    private pushNotificationService: NotificacionPushService
   ) { }
 
   ngOnInit(): void {
@@ -34,17 +36,25 @@ export class MainComponent implements OnInit, OnDestroy {
     // al entrar manda online al ingresar automaticamente
     this.comercioService.guardarEstadoOnline(1);
 
+    this.pushNotificationService.getIsTienePermiso();
+
+    setTimeout(() => {
+      // this.isOnGeoPosition = this.geoPositionService.getGeoPosition().hasPermition;
+      // console.log('notificacion');
+      this.pushNotificationService.suscribirse();
+    }, 1500);
+
     // listen close page
     // window.onbeforeunload = function() {
     //   alert('Al cerrar dejara de recibir pedidos.');
     // };
 
-    window.addEventListener('beforeunload', function (e) {
-      const confirmationMessage = 'Al cerrar dejara de recibir pedidos.';
+    // window.addEventListener('beforeunload', function (e) {
+    //   const confirmationMessage = 'Al cerrar dejara de recibir pedidos.';
 
-      (e || window.event).returnValue = confirmationMessage;
-      return confirmationMessage;
-    });
+    //   (e || window.event).returnValue = confirmationMessage;
+    //   return confirmationMessage;
+    // });
   }
 
   ngOnDestroy(): void {
