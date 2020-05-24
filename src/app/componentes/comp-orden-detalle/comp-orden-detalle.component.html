@@ -15,7 +15,7 @@
                 <ng-template #elseConRepartidor>
 
                     <p><i class="fa fa-motorcycle" aria-hidden="true"></i> Repartidor: {{ nomRepartidor || 'No asignado' }}</p>
-                    <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplateNoRepartidores">
+                    <ng-container *ngIf="isComercioPropioRepartidor && orden.flag_solicita_repartidor_papaya !== 1; else elseTemplateNoRepartidores">
                         <mat-form-field *ngIf="orden.pwa_delivery_status !== '4'"> 
                             <mat-select [(value)]="repartidorSelected" (selectionChange)="saveRepartidor($event)">
                               <mat-option *ngFor="let item of listRepartidoresPropios" [value]="item.idrepartidor">{{ item.nombre }}</mat-option>                          
@@ -34,11 +34,22 @@
             </div>
             <!-- <button *ngIf="!isTieneRepartidor && !isRepartidoresPropios">Buscar Repartidor</button> -->
         </div>
-        <div>
+        <div class="d-flex">
+
+            <div class="pr-2" *ngIf="!orden.isClientePasaRecoger && orden.flag_solicita_repartidor_papaya !== 1 && isComercioPropioRepartidor">
+                <button class="btn btn-info" title="Solicita un repartidor de la red de Papaya Express para este pedido." (click)="solicitarRepartopapaya()">
+                    <i *ngIf="!loaderFlagRepartidor" class="fa fa-bicycle pr-2" aria-hidden="true"></i>
+                    <i *ngIf="loaderFlagRepartidor" class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+                    <span class="fw-100 fs-11">LLamar repartidor Papaya Express</span>
+                </button>
+            </div>
+
             <!-- boton cerrar -->
-            <button type="button" class="btn btn-secondary" mat-dialog-close>
-                <i class="fa fa-close"></i>                
-            </button>
+            <div>
+                <button type="button" class="btn btn-secondary" mat-dialog-close>
+                    <i class="fa fa-close"></i>                
+                </button>
+            </div>
         </div>
     </div>
     <hr>

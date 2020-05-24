@@ -65,6 +65,22 @@ export class PedidoComercioService {
     return getEstado;
   }
 
+
+  // comercio con repartidores propios solicita repartidor para este pedido
+  setFlagSolicitaRepartidorRed(idpedido: number): any {
+    return new Observable(observer => {
+      const _dataSend = {
+        idpedido: idpedido,
+      };
+
+      this.crudService.postFree(_dataSend, 'comercio', 'set-flag-solicita-repartidor-papaya')
+        .subscribe(res => {
+          this.socketService.emit('set-solicitar-repartidor-papaya', null);
+          observer.next(res);
+        });
+    });
+  }
+
   getEstadoPedido(pwa_estado: string, isSave = false): any {
     let estadoPedido = '';
     let btnTitulo = '';
@@ -122,16 +138,47 @@ export class PedidoComercioService {
 
 
   // quitamos servicio delivery y propina del subtotal
-  darFormatoSubTotales(arrTotales: any = null) {
+  // flagSolicitaRepartidor = cuando comercio con repartidor propio solicita repartidor de la red papaya express
+  darFormatoSubTotales(arrTotales: any = null, costoEntrega: number = 0, flagSolicitaRepartidor: boolean = false) {
+    console.log('aaa');
 
     // si tiene sus propios repartidores no da formato no quita nada
-    if ( this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1 ) { return arrTotales; }
+    if ( this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1 && !flagSolicitaRepartidor ) { return arrTotales; }
+
+
+    // agregar o restar el importe del costo de entrega SI el comercio paga el costo de entrega pwa_delivery_comercio_paga_entrega
+    if ( this.comercioService.sedeInfo.pwa_delivery_comercio_paga_entrega === 1 || flagSolicitaRepartidor) {
+      // ingresamos en la penultima postion del arrTotales
+      const postionInsert = arrTotales.length - 1;
+      const _row = {
+        descripcion: 'Costo de Entrega',
+        esImpuesto: 0,
+        id: -4,
+        importe: - costoEntrega,
+        quitar: false,
+        tachado: false,
+        visible: false,
+        visible_cpe: false
+      };
+      arrTotales.splice(postionInsert, 0, _row);
+
+      // console.log('costo de entrega insertado', arrTotales);
+    }
 
     // console.log(arrTotales);
     const rowTotal = arrTotales[arrTotales.length - 1];
-    // -2 = servicio deliver -3 = propina
-    rowTotal.importe = arrTotales.filter(x => x.id !== -2 && x.id !== -3 && x.descripcion !== 'TOTAL').map(x => parseFloat(x.importe)).reduce((a, b) => a + b, 0);
-    return arrTotales.filter(x => x.id !== -2 && x.id !== -3);
+
+    // si repartidores propio muestra comisiciones y propina
+    if ( this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1) {
+
+      rowTotal.importe = arrTotales.filter(x => x.descripcion !== 'TOTAL').map(x => parseFloat(x.importe)).reduce((a, b) => a + b, 0);
+      return arrTotales;
+
+    } else {
+      // -2 = servicio deliver -3 = propina
+      rowTotal.importe = arrTotales.filter(x => x.id !== -2 && x.id !== -3 && x.descripcion !== 'TOTAL').map(x => parseFloat(x.importe)).reduce((a, b) => a + b, 0);
+      return arrTotales.filter(x => x.id !== -2 && x.id !== -3);
+    }
   }
 
 
@@ -144,5 +191,6 @@ export class PedidoComercioService {
       console.log('.');
     });
   }
+
 
 }

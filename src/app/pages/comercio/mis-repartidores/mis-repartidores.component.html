@@ -65,7 +65,8 @@
                 <ng-container matColumnDef="op">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element" class="xCursor">
-                        <i class="fa fa-pencil" (click)="openDialogRepartidor(element)"></i>
+                        <i class="fa fa-pencil pr-3" (click)="openDialogRepartidor(element)"></i>
+                        <i class="fa fa-times text-danger" (click)="borrarRepartidor(element)"></i>
                     </td>
                 </ng-container>
                 

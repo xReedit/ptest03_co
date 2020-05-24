@@ -10,6 +10,7 @@ export class DialogDesicionComponent implements OnInit {
   msj = '';
   titleBtnCancel = 'No';
   titleBtnSuccess = 'Si, por favor';
+  otroDato: '';
   constructor(
     @Inject(MAT_DIALOG_DATA) data: any,
   ) {
@@ -20,6 +21,14 @@ export class DialogDesicionComponent implements OnInit {
         break;
       case 1:
         this.msj = 'Desea saber cuando tenga descuentos y/o ofertas?';
+        break;
+      case 2:
+        this.msj = 'Esta seguro de eliminar este registro?';
+        break;
+      case 3:
+        const costoEntrega = data.costoEntrega;
+        this.msj = `Deseo Solicitar un repartidor de Papaya Express para este pedido. Al confirmar no podra asignar este pedido a ningún otro repartidor.
+                    Ademas el comercio asume el costo del servicio de entrega (S/. ${ parseFloat(costoEntrega).toFixed(2) }). Desea confirmar su solicitud?`;
         break;
     }
   }

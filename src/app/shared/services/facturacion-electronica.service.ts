@@ -141,4 +141,16 @@ export class FacturacionElectronicaService {
 
   }
 
+
+  // quitamos pwa_delivery_comercio_paga_entrega costo de entrega y lo volvemos a sumar, por que el costo de entrega que paga el comercio no figura en el comprobante
+  darFormatoSubTotalesParaFacturacion(arrTotales: any = null) {
+    const rowCostoEntrega = arrTotales.filter(x => x.id === -4)[0];
+    if ( rowCostoEntrega ) {
+      const rowTotal = arrTotales[arrTotales.length - 1];
+      rowTotal.importe += (rowCostoEntrega.importe * -1); // este dato es negativo
+      return arrTotales.filter(x => x.id !== -4); // quitamos costo de entrega que paga el comericio
+    }
+    return arrTotales;
+  }
+
 }

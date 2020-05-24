@@ -172,7 +172,9 @@ export class ComFacturadorComponent implements OnInit {
 
   emitirFacturar() {
     const json_datos_delivery = this.orden.json_datos_delivery;
-    const items = this.facturacionService.xCargarDatosAEstructuraImpresion(json_datos_delivery.p_body, json_datos_delivery.p_subtotales);
+    let arrSubTotalespedido = JSON.parse(JSON.stringify(json_datos_delivery.p_subtotales));
+    arrSubTotalespedido = this.facturacionService.darFormatoSubTotalesParaFacturacion(arrSubTotalespedido);
+    const items = this.facturacionService.xCargarDatosAEstructuraImpresion(json_datos_delivery.p_body, arrSubTotalespedido);
 
     this.datosConsulta.num_doc = this.datosConsulta.num_doc ? this.datosConsulta.num_doc : this.num_documento;
     console.log('items facturacion', items);
@@ -183,10 +185,10 @@ export class ComFacturadorComponent implements OnInit {
       this.facturacionService.guardarClienteNuevo(this.datosConsulta)
         .subscribe(res => {
           this.datosConsulta.idcliente = res[0].idcliente;
-          this.facturacionService.cocinarFactura(this.orden.idpedido, items, json_datos_delivery.p_subtotales, this.comprobanteSelected, this.datosConsulta);
+          this.facturacionService.cocinarFactura(this.orden.idpedido, items, arrSubTotalespedido, this.comprobanteSelected, this.datosConsulta);
         });
     } else {
-      this.facturacionService.cocinarFactura(this.orden.idpedido, items, json_datos_delivery.p_subtotales, this.comprobanteSelected, this.datosConsulta);
+      this.facturacionService.cocinarFactura(this.orden.idpedido, items, arrSubTotalespedido, this.comprobanteSelected, this.datosConsulta);
     }
 
     this.orden.pwa_facturado = 1;

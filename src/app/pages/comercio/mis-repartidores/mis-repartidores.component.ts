@@ -6,6 +6,7 @@ import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { EstablecimientoService } from 'src/app/shared/services/establecimiento.service';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
 import { InfoTockenService } from 'src/app/shared/services/info-token.service';
+import { DialogDesicionComponent } from 'src/app/componentes/dialog-desicion/dialog-desicion.component';
 
 @Component({
   selector: 'app-mis-repartidores',
@@ -41,7 +42,7 @@ export class MisRepartidoresComponent implements OnInit {
   openDialogRepartidor(elRepartidor: any = null) {
 
     const _dialogConfig = new MatDialogConfig();
-    _dialogConfig.disableClose = false;
+    _dialogConfig.disableClose = true;
     _dialogConfig.hasBackdrop = true;
     _dialogConfig.width = '400px';
     _dialogConfig.panelClass = ['my-dialog-orden-detalle', 'my-dialog-scrool'];
@@ -54,6 +55,7 @@ export class MisRepartidoresComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogAddRepartidorComponent, _dialogConfig);
 
     dialogRef.afterClosed().subscribe((result: any) => {
+      if ( !result ) {return; }
       if ( result !== false ) {
         result.idsede = this.infoTokenService.infoUsToken.usuario.idsede;
         // guarda o modifica repartidor
@@ -71,6 +73,30 @@ export class MisRepartidoresComponent implements OnInit {
       }
     });
 
+  }
+
+  borrarRepartidor(repartidor: any) {
+    const _dialogConfig = new MatDialogConfig();
+    _dialogConfig.disableClose = true;
+    _dialogConfig.hasBackdrop = true;
+    _dialogConfig.data = {
+      idMjs: 2
+    };
+
+
+    const dialogRef = this.dialog.open(DialogDesicionComponent, _dialogConfig);
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if ( result ) {
+        const dataReparitdor = {
+          idrepartidor: repartidor.idrepartidor
+        };
+
+        this.crudService.postFree(dataReparitdor, 'comercio', 'borrar-mi-repartidor', true)
+        .subscribe(res => {
+            this.loadRepartidores();
+        });
+      }
+    });
   }
 
 }

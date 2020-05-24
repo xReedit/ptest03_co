@@ -78,16 +78,18 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
 
     // this.xloadOrdenesPendientes(`'P', 'A'`);
-    this.listenSocket();
-    this.comercioService.getSedeInfo();
-    this.isComercioPropioRepartidor = this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1;
-
 
     this.listBtnToolbar.push({descripcion: 'Pendientes', checked: true, filtro: `'P', 'A'`});
     this.listBtnToolbar.push({descripcion: ' Listos ', checked: false, filtro: `'D'`});
     this.listBtnToolbar.push({descripcion: ' Entregados ', checked: false, filtro: `'R', 'E'` });
 
     this.optionChekListSelected = this.listBtnToolbar[0];
+
+    this.listenSocket();
+    this.comercioService.getSedeInfo();
+    console.log( 'this.comercioService.sedeInfo', this.comercioService.sedeInfo);
+
+    this.isComercioPropioRepartidor = this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1;
   }
 
   ngOnDestroy(): void {
@@ -182,7 +184,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   private xloadOrdenesPendientes(fitro: string): void {
     this.comercioService.loadOrdenesPendientes(fitro)
     .subscribe((res: any) => {
-      // console.log(res);
+      console.log(res);
       this.listOrdenes = res;
 
       this.cantidadOrdenes = this.listOrdenes.length;
@@ -196,14 +198,16 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   }
 
   private darFormatoOrden(): void {
-    this.listOrdenes.map( (z: any) => {
+    this.listOrdenes.filter(x => !x.con_formato).map( (z: any) => {
+      // if ( z.con_formato ) {return; }
       z.json_datos_delivery =  typeof z.json_datos_delivery === 'object' ? z.json_datos_delivery : JSON.parse(z.json_datos_delivery);
       z.estadoTitle = this.pedidoComercioService.getEstadoPedido(z.pwa_estado).estadoTitle;
-      z.json_datos_delivery.p_subtotales = this.pedidoComercioService.darFormatoSubTotales(z.json_datos_delivery.p_subtotales);
+      z.json_datos_delivery.p_subtotales = this.pedidoComercioService.darFormatoSubTotales(z.json_datos_delivery.p_subtotales, z.json_datos_delivery.p_header.arrDatosDelivery.costoTotalDelivery);
       z.visible = true;
       z.isTieneRepartidor = z.idrepartidor ? true : false;
       z.isClientePasaRecoger = z.json_datos_delivery.p_header.arrDatosDelivery.pasoRecoger;
       z.nom_repartidor = z.isClientePasaRecoger ? 'Cliente Recoge' : z.nom_repartidor;
+      z.con_formato = true;
 
       const minStart = z.tiempo ? z.tiempo : 0;
       z.color = minStart >= this.timepoMax ? 'r' : minStart >= this.timepoMedio ? 'a' : 'v';
@@ -215,7 +219,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
   private initTimerOrdenes(): void {
     this.calcTimer();
-    this.timerRun = setInterval(() => {this.calcTimer(); }, 15000);
+    this.timerRun = setInterval(() => {this.calcTimer(); }, 1000);
   }
 
   private calcTimer(): void {

@@ -3,6 +3,8 @@ import { PedidoComercioService } from 'src/app/shared/services/pedido-comercio.s
 import { PedidoModel } from 'src/app/modelos/pedido.model';
 import { ComercioService } from 'src/app/shared/services/comercio.service';
 import { ListenStatusService } from 'src/app/shared/services/listen-status.service';
+import { DialogDesicionComponent } from '../dialog-desicion/dialog-desicion.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-comp-orden-detalle',
@@ -19,6 +21,7 @@ export class CompOrdenDetalleComponent implements OnInit {
   btnActionTitule = 'Aceptar Pedido';
   loaderEstado = false;
   loaderFacturacion = false;
+  loaderFlagRepartidor = false;
 
   showFacturar = false; // cambia cunado da click en facturar
   isShowControlFacturador = false;
@@ -40,12 +43,13 @@ export class CompOrdenDetalleComponent implements OnInit {
   constructor(
     private pedidoComercioService: PedidoComercioService,
     private comercioService: ComercioService,
-    private listenService: ListenStatusService
+    private listenService: ListenStatusService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
 
-    // console.log('orden detalle', this.orden);
+    console.log('orden detalle', this.orden);
     this.getEstadoPedido();
     // this.isTieneRepartidor = this.orden.repartidor ? true : false;
 
@@ -146,6 +150,43 @@ export class CompOrdenDetalleComponent implements OnInit {
     this.listenService.setPedidoModificado(this.orden);
     this.pedidoComercioService.setRepartidorToPedido(indexR, this.orden);
 
+  }
+
+
+  solicitarRepartopapaya() {
+    const _dialogConfig = new MatDialogConfig();
+    _dialogConfig.disableClose = true;
+    _dialogConfig.hasBackdrop = true;
+    _dialogConfig.data = {
+      idMjs: 3,
+      costoEntrega: this.orden.json_datos_delivery.p_header.arrDatosDelivery.costoTotalDelivery
+    };
+
+
+    this.loaderFlagRepartidor  = true;
+    const dialogRef = this.dialog.open(DialogDesicionComponent, _dialogConfig);
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if ( result ) {
+        this.orden.flag_solicita_repartidor_papaya = 1;
+        this.pedidoComercioService.setFlagSolicitaRepartidorRed(this.orden.idpedido)
+        .subscribe( res => {
+
+          this.orden.json_datos_delivery.p_subtotales = this.pedidoComercioService.darFormatoSubTotales(this.orden.json_datos_delivery.p_subtotales, this.orden.json_datos_delivery.p_header.arrDatosDelivery.costoTotalDelivery, true);
+
+          this.loaderFlagRepartidor  = false;
+          this.cerrarDetalles(true);
+        });
+        // const dataReparitdor = {
+        //   idrepartidor: repartidor.idrepartidor
+        // };
+
+        // this.crudService.postFree(dataReparitdor, 'comercio', 'borrar-mi-repartidor', true)
+        // .subscribe(res => {
+        //     this.loadRepartidores();
+        // });
+      }
+      this.loaderFlagRepartidor  = false;
+    });
   }
 
 

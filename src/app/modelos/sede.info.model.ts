@@ -12,6 +12,7 @@ export class SedeInfoModel {
     var_size_font_tall_comanda: number;
     pwa_delivery_servicio_propio: number;
     pwa_comercio_afiliado: number; // 1 si el comercio esta afiliado
+    pwa_delivery_comercio_paga_entrega: number; // si el comercio paga el servicio de entrega al repartidor
     facturacion_e_activo: number; // 1 si tiene facturacion electronica con el servicio
     direccion: string;
     ubigeo: string;
