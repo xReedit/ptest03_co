@@ -1,8 +1,10 @@
 <div class="animated fadeIn">
     <!-- encabezado -->
     <div class="d-flex justify-content-between">
-        <div>
-            <p class="fw-600">Pedido #{{orden.idpedido}}</p>
+        <div>            
+            <p class="fw-600">Pedido #{{orden.idpedido}}  <span *ngIf="orden.json_datos_delivery.p_header.isCliente === 1" class="badge badge-success">
+                APP
+            </span>           </p>
             <div class="fs-13">
 
                 <ng-container *ngIf="orden.isClientePasaRecoger; else elseConRepartidor">
@@ -18,7 +20,7 @@
                     <ng-container *ngIf="isComercioPropioRepartidor && orden.flag_solicita_repartidor_papaya !== 1; else elseTemplateNoRepartidores">
                         <mat-form-field *ngIf="orden.pwa_delivery_status !== '4'"> 
                             <mat-select [(value)]="repartidorSelected" (selectionChange)="saveRepartidor($event)">
-                              <mat-option *ngFor="let item of listRepartidoresPropios" [value]="item.idrepartidor">{{ item.nombre }}</mat-option>                          
+                              <mat-option *ngFor="let item of listRepartidoresPropios" [value]="item">{{ item.nombre }}</mat-option>                          
                             </mat-select>
                           </mat-form-field>
                     </ng-container>
@@ -36,12 +38,14 @@
         </div>
         <div class="d-flex">
 
-            <div class="pr-2" *ngIf="!orden.isClientePasaRecoger && orden.flag_solicita_repartidor_papaya !== 1 && isComercioPropioRepartidor">
-                <button class="btn btn-info" title="Solicita un repartidor de la red de Papaya Express para este pedido." (click)="solicitarRepartopapaya()">
-                    <i *ngIf="!loaderFlagRepartidor" class="fa fa-bicycle pr-2" aria-hidden="true"></i>
-                    <i *ngIf="loaderFlagRepartidor" class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
-                    <span class="fw-100 fs-11">LLamar repartidor Papaya Express</span>
-                </button>
+            <div *ngIf="isHabilitadoLLamarRepartidorPapaya">
+                <div class="pr-2" *ngIf="!orden.isClientePasaRecoger && orden.flag_solicita_repartidor_papaya !== 1 && isComercioPropioRepartidor">
+                    <button class="btn btn-info" title="Solicita un repartidor de la red de Papaya Express para este pedido." (click)="solicitarRepartopapaya()">
+                        <i *ngIf="!loaderFlagRepartidor" class="fa fa-bicycle pr-2" aria-hidden="true"></i>
+                        <i *ngIf="loaderFlagRepartidor" class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
+                        <span class="fw-100 fs-11 hidden-mobile">LLamar repartidor Papaya Express</span>
+                    </button>
+                </div>
             </div>
 
             <!-- boton cerrar -->
@@ -58,8 +62,19 @@
             <span class="fs-13 fw-600 text-secondary">Cliente: </span>
             <p><i class="fa fa-user"></i>  {{orden.json_datos_delivery.p_header.arrDatosDelivery.nombre}}</p>
             <p><i class="fa fa-map-marker"></i>  {{orden.json_datos_delivery.p_header.arrDatosDelivery.direccion}}</p>
+            <p><i class="fa fa-map-marker"></i>  {{orden.json_datos_delivery.p_header.arrDatosDelivery.referencia}}</p>
             <p><i class="fa fa-phone"></i> {{ orden.json_datos_delivery.p_header.arrDatosDelivery.telefono }}</p>
-        </div>        
+
+            <!-- metodo de pago -->
+            <p class="fw-600 badge" [ngClass]="{'badge-primary': orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 3, 'badge-info': orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 2, 'badge-secondary': orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 1}">
+                <span class="fs-15">{{orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.descripcion | titlecase }} </span>
+
+                <span *ngIf="orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 2" class="pl-2">
+                    Cliente pago con tarjeta desde la aplicación.
+                </span>
+            </p>
+                    
+        </div>
     </div>
     <hr>
 
@@ -73,13 +88,13 @@
             <div class="text-right">
                 <ng-container *ngIf="orden.pwa_facturado === 0; else elseTemplateFacturado">
                     <button class="btn btn-success" (click)="goFacturar()">
-                        Facturar
+                        Emitir Comprobante
                     </button>
                 </ng-container>
                 <ng-template #elseTemplateFacturado>
                     <i *ngIf="!loaderFacturacion" class="fa fa-check fa-2x text-success"></i>
                     <i *ngIf="loaderFacturacion" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
-                </ng-template>                            
+                </ng-template>                       
             </div>
         </div>
 

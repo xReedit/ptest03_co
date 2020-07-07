@@ -65,6 +65,10 @@
     background: lightcoral;
 }
 
+.c-header.programado {
+    background: #80deea;
+}
+
 .c-etiqueta-tiempo.verde {
     background: lightgreen;
 }

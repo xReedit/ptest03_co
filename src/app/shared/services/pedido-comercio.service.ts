@@ -140,7 +140,7 @@ export class PedidoComercioService {
   // quitamos servicio delivery y propina del subtotal
   // flagSolicitaRepartidor = cuando comercio con repartidor propio solicita repartidor de la red papaya express
   darFormatoSubTotales(arrTotales: any = null, costoEntrega: number = 0, flagSolicitaRepartidor: boolean = false) {
-    console.log('aaa');
+    // console.log('aaa');
 
     // si tiene sus propios repartidores no da formato no quita nada
     if ( this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1 && !flagSolicitaRepartidor ) { return arrTotales; }

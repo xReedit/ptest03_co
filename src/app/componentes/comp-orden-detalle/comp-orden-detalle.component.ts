@@ -36,6 +36,7 @@ export class CompOrdenDetalleComponent implements OnInit {
   // si tiene habilitado facturacion
   isFacturacionActivo = false;
   isComercioPropioRepartidor = false;
+  isHabilitadoLLamarRepartidorPapaya = true;
 
   listRepartidoresPropios: any;
   repartidorSelected;
@@ -65,6 +66,7 @@ export class CompOrdenDetalleComponent implements OnInit {
     this.nomRepartidor = this.orden.idrepartidor ? this.orden.nom_repartidor + ' ' + this.orden.ap_repartidor : null;
     this.repartidorSelected = this.orden.idrepartidor;
     this.isComercioPropioRepartidor = this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1;
+    this.isHabilitadoLLamarRepartidorPapaya = this.comercioService.sedeInfo.pwa_delivery_habilitar_llamar_repartidor_papaya === 1;
 
     // si tiene repartidores propios
     if ( this.isComercioPropioRepartidor ) {
@@ -140,15 +142,16 @@ export class CompOrdenDetalleComponent implements OnInit {
 
 
   saveRepartidor($event): void {
-    const indexR = $event.value;
-    const _repartidor = this.listRepartidoresPropios.filter(r => r.idrepartidor === indexR)[0];
+    console.log($event);
+    // const indexR = $event.value;
+    const _repartidor = $event.value; // this.listRepartidoresPropios.filter(r => r.idrepartidor === indexR)[0];
     this.orden.idrepartidor = _repartidor.idrepartidor;
     this.orden.nom_repartidor = _repartidor.nombre;
     this.orden.ap_repartidor = _repartidor.apellido;
     this.orden.telefono_repartidor = _repartidor.telefono;
 
     this.listenService.setPedidoModificado(this.orden);
-    this.pedidoComercioService.setRepartidorToPedido(indexR, this.orden);
+    this.pedidoComercioService.setRepartidorToPedido(_repartidor.idrepartidor, this.orden);
 
   }
 

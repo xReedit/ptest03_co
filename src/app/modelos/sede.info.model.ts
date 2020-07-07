@@ -13,6 +13,7 @@ export class SedeInfoModel {
     pwa_delivery_servicio_propio: number;
     pwa_comercio_afiliado: number; // 1 si el comercio esta afiliado
     pwa_delivery_comercio_paga_entrega: number; // si el comercio paga el servicio de entrega al repartidor
+    pwa_delivery_habilitar_llamar_repartidor_papaya: number; // 0 no puede llamar a repartidor
     facturacion_e_activo: number; // 1 si tiene facturacion electronica con el servicio
     direccion: string;
     ubigeo: string;

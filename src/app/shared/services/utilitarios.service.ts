@@ -39,6 +39,30 @@ export class UtilitariosService {
 
     }
 
+    xTiempoTranscurridos_milisegundo(h2: string) {
+      const t2 = new Date(h2);
+      // const h1 = this.xDevolverHora();
+      // const hora1 = h1.split(':');
+      // const hora2 = h2.split(':');
+      const t1 = new Date();
+      // const t2 = new Date();
+
+      // if ( hora2[2] === null) { hora2[2] = '00'; }
+      // t2.setHours( hora1[0], hora1[1], hora1[2]);
+      // t1.setHours( hora2[0], hora2[1], hora2[2]);
+
+
+      const dif = <number><unknown>t2 - <number><unknown>t1; // diferencia en milisegundos
+
+      // const difSeg = Math.floor(dif / 1000);
+      // const segundos = difSeg % 60; // segundos
+      // const difMin = Math.floor(difSeg / 60);
+      // const minutos = difMin % 60; // minutos
+      // const difHs = Math.floor(difMin / 60);
+      // const horas = difHs % 24; // horas
+      // return this.xCeroIzq(horas, 2) + ':' + this.xCeroIzq(minutos, 2) + ':' + this.xCeroIzq(segundos, 2);
+      }
+
 
   xDevolverHora(): any {
     const d = new Date();

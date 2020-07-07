@@ -43,39 +43,52 @@
                     <!-- <button (click)="quitarOrden(item)">quitar orden</button>                 -->
                     <div matRipple (click)="openDialogOrden(item)">
                         <div class="c-header fs-13 p-3 border-bottom"
-                            [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r'}">
+                            [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r', 'programado': item.color === 'p'}">
                             <div class="text-left">
                                 <p class="fw-600 fs-15">#{{item.idpedido}}</p>                                
                             </div>
                             <div class="text-center">
-                                <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
-
-                                <p class="fs-11">                        
-                                    <ng-container *ngIf="item.isClientePasaRecoger; else elseConRepartidor">
-                                        <i class="fa fa-user p-1"></i>
-                                        <span>Cliente Recoge</span>
-                                    </ng-container>
-                                    <ng-template #elseConRepartidor>                                        
-                                        <ng-container *ngIf="item.isTieneRepartidor; else elseTemplate">
-                                            Asignado
+                                
+                                <ng-container *ngIf="item.flag_pedido_programado; else elseTemplate">
+                                    <!-- pedido programado -->
+                                    <i class="fa fa-clock-o fa-2x"></i>
+                                    <p class="fw-600">Pedido Programado</p>
+                                    <p class="fs-11"> {{ item.json_datos_delivery.p_header.arrDatosDelivery.tiempoEntregaProgamado.descripcion }} - {{ item.json_datos_delivery.p_header.arrDatosDelivery.tiempoEntregaProgamado.hora }} </p>
+                                </ng-container>
+                                <ng-template #elseTemplate>
+                                    
+                                    <p class="fs-20 fw-600">{{ i + 1 | number: '2.' }}</p>
+    
+                                    <p class="fs-11">                        
+                                        <ng-container *ngIf="item.isClientePasaRecoger; else elseConRepartidor">
+                                            <i class="fa fa-user p-1"></i>
+                                            <span>Cliente Recoge</span>
                                         </ng-container>
-                                        <ng-template #elseTemplate>
-                                            <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplate">
-                                                No asignado
+                                        <ng-template #elseConRepartidor>                                        
+                                            <ng-container *ngIf="item.isTieneRepartidor; else elseTemplate">
+                                                Asignado
                                             </ng-container>
                                             <ng-template #elseTemplate>
-                                                <span>Buscando Repartidor...</span>
-                                            </ng-template>                                                                    
+                                                <ng-container *ngIf="isComercioPropioRepartidor; else elseTemplate">
+                                                    No asignado
+                                                </ng-container>
+                                                <ng-template #elseTemplate>
+                                                    <span>Repartidor no Asignado</span>
+                                                </ng-template>                                                                    
+                                            </ng-template>
                                         </ng-template>
-                                    </ng-template>
-                                                
-                                    
-                                </p>
+                                                    
+                                        
+                                    </p>
+
+                                </ng-template>
+                                
+
 
                             </div>
                             <div class="text-right">
                                 <!-- <p class="fw-600">{{ item.tiempo }}</p> -->
-                                <p class="fw-600 badge" style="font-size: 14px !important;" [ngClass]="{'badge-success': item.color === 'v', 'badge-warning': item.color === 'a', 'badge-danger': item.color === 'r'}">
+                                <p *ngIf="item.tiempo" class="fw-600 badge" style="font-size: 14px !important;" [ngClass]="{'badge-success': item.color === 'v', 'badge-warning': item.color === 'a', 'badge-danger': item.color === 'r'}">
                                     {{ item.tiempo }} {{ item.labelMinTiempo }}
                                 </p>
                                 <p class="fs-12">{{ item.estadoTitle }}</p>

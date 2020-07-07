@@ -87,7 +87,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
 
     this.listenSocket();
     this.comercioService.getSedeInfo();
-    console.log( 'this.comercioService.sedeInfo', this.comercioService.sedeInfo);
+    // console.log( 'this.comercioService.sedeInfo', this.comercioService.sedeInfo);
 
     this.isComercioPropioRepartidor = this.comercioService.sedeInfo.pwa_delivery_servicio_propio === 1;
   }
@@ -198,6 +198,7 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   }
 
   private darFormatoOrden(): void {
+    console.log('aaa');
     this.listOrdenes.filter(x => !x.con_formato).map( (z: any) => {
       // if ( z.con_formato ) {return; }
       z.json_datos_delivery =  typeof z.json_datos_delivery === 'object' ? z.json_datos_delivery : JSON.parse(z.json_datos_delivery);
@@ -208,9 +209,11 @@ export class OrdenesComponent implements OnInit, OnDestroy {
       z.isClientePasaRecoger = z.json_datos_delivery.p_header.arrDatosDelivery.pasoRecoger;
       z.nom_repartidor = z.isClientePasaRecoger ? 'Cliente Recoge' : z.nom_repartidor;
       z.con_formato = true;
+      z.flag_pedido_programado = z.flag_pedido_programado ? z.flag_pedido_programado : 0;
 
       const minStart = z.tiempo ? z.tiempo : 0;
       z.color = minStart >= this.timepoMax ? 'r' : minStart >= this.timepoMedio ? 'a' : 'v';
+      z.color = z.flag_pedido_programado === 1 ? 'p' : z.color;
       return z;
     });
 
@@ -225,11 +228,22 @@ export class OrdenesComponent implements OnInit, OnDestroy {
   private calcTimer(): void {
     let minStart = 0;
     this.listOrdenes.map(x => {
+      if ( x.flag_pedido_programado === 1 ) {
+        const _dateProgramado = new Date(x.fecha_hora);
+        const _notificaNow = _dateProgramado.getTime() > Date.now();
+        if ( !_notificaNow ) {
+          x.flag_pedido_programado = 0;
+          x.hora = _dateProgramado.getHours() + ':' + _dateProgramado.getMinutes() + ':00';
+        }
+        return;
+      }
       if ( x.pwa_delivery_status.toString() === '4')  { x.labelMinTiempo = 'Min'; return; }
       x.labelMinTiempo = '';
       x.tiempo = this.utilService.xTiempoTranscurridos_2(x.hora);
+      // x.tiempo = this.utilService.xTiempoTranscurridos_milisegundo(x.fecha_hora);
       minStart = x.tiempo.split(':')[1]; // minutos
       x.color = minStart >= this.timepoMax ? 'r' : minStart >= this.timepoMedio ? 'a' : 'v';
+      x.color = x.flag_pedido_programado === 1 ? 'p' : x.color;
     });
   }
 

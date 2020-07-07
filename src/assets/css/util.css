@@ -372,7 +372,7 @@ p, span, div {
 /*MEDIA SCREEN*/
 /*MEDIA SCREEN*/
 .hidden-mobile {
-  display: block;
+  display: initial;
 }
 @media screen and (max-width: 768px) {
 	.hidden-mobile {

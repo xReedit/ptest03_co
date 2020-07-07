@@ -20,6 +20,8 @@ export class ComFacturadorComponent implements OnInit {
   isvalid = true;
   isTieneCliente = false;
   isValidAll = false;
+  isProcesandoFactura = false;
+  isComprobanteProcesado = false;
 
   listTipoComprobante: any;
   comprobanteSelected: any;
@@ -65,6 +67,13 @@ export class ComFacturadorComponent implements OnInit {
     this.comprobanteSelected = this.listTipoComprobante.filter((x: any) => x.descripcion.toLowerCase() === _dataClienteComprobante.descripcion.toLowerCase())[0];
 
     if ( _dataClienteComprobante?.otro_dato ) {
+      this.isConrolVisible = true;
+      this.isShowControl.emit(this.isConrolVisible);
+      return;
+    }
+
+    // si el pedido fue hecho desde el comercio
+    if ( this.orden.json_datos_delivery.p_header.isCliente === 0) {
       this.isConrolVisible = true;
       this.isShowControl.emit(this.isConrolVisible);
       return;
@@ -171,13 +180,14 @@ export class ComFacturadorComponent implements OnInit {
   }
 
   emitirFacturar() {
+    this.isProcesandoFactura = true;
     const json_datos_delivery = this.orden.json_datos_delivery;
     let arrSubTotalespedido = JSON.parse(JSON.stringify(json_datos_delivery.p_subtotales));
     arrSubTotalespedido = this.facturacionService.darFormatoSubTotalesParaFacturacion(arrSubTotalespedido);
     const items = this.facturacionService.xCargarDatosAEstructuraImpresion(json_datos_delivery.p_body, arrSubTotalespedido);
 
     this.datosConsulta.num_doc = this.datosConsulta.num_doc ? this.datosConsulta.num_doc : this.num_documento;
-    console.log('items facturacion', items);
+    // console.log('items comprobante', items);
 
 
     // si el cliente es nuevo lo guarda
@@ -186,13 +196,22 @@ export class ComFacturadorComponent implements OnInit {
         .subscribe(res => {
           this.datosConsulta.idcliente = res[0].idcliente;
           this.facturacionService.cocinarFactura(this.orden.idpedido, items, arrSubTotalespedido, this.comprobanteSelected, this.datosConsulta);
+          this.loaderProcesandoComprobante();
         });
     } else {
       this.facturacionService.cocinarFactura(this.orden.idpedido, items, arrSubTotalespedido, this.comprobanteSelected, this.datosConsulta);
+      this.loaderProcesandoComprobante();
     }
 
     this.orden.pwa_facturado = 1;
 
+  }
+
+  private loaderProcesandoComprobante() {
+    setTimeout(() => {
+      this.isProcesandoFactura = false;
+      this.isComprobanteProcesado = true;
+    }, 1500);
   }
 
   atras() {

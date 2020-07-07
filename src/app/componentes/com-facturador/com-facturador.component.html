@@ -29,6 +29,18 @@
     <!-- <button [disabled]="!loadConsulta && !isValidAll" (click)="emitirFacturar()">Emitir factura</button> -->
     <div class="text-center">
         <button mat-flat-button class="pr-2" (click)="atras()"> <i class="fa fa-arrow-left"></i> Atras</button>
-        <button mat-flat-button color="primary" [disabled]="!loadConsulta && !isValidAll" (click)="emitirFacturar()"> Emitir factura </button>
+        <ng-container *ngIf="!isComprobanteProcesado; else elseTemplate">            
+            <ng-container *ngIf="!isProcesandoFactura; else elseTemplate">
+                <button mat-flat-button color="primary" [disabled]="!loadConsulta && !isValidAll" (click)="emitirFacturar()">Emitir Comprobante </button>                
+            </ng-container>
+            <ng-template #elseTemplate>
+                <button mat-flat-button color="primary" [disabled]="true"><i class="fa fa-spinner fa-spin fa-2x fa-fw"></i> Procesando </button>                                
+            </ng-template>
+            
+        </ng-container>
+        <ng-template #elseTemplate>
+            <button mat-flat-button color="primary" [disabled]="true"> <i class="fa fa-check"></i> Hecho </button>
+        </ng-template>
+        
     </div>
 </div>
