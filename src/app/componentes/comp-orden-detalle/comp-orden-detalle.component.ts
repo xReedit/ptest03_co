@@ -14,6 +14,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 export class CompOrdenDetalleComponent implements OnInit {
 
   @Input() orden: any;
+  @Input() isViewOnlyPedidoUrl: boolean;
   @Output() closeWindow = new EventEmitter<boolean>(false); // manda cerrar el dialog
 
   isTieneRepartidor = false;
@@ -37,6 +38,10 @@ export class CompOrdenDetalleComponent implements OnInit {
   isFacturacionActivo = false;
   isComercioPropioRepartidor = false;
   isHabilitadoLLamarRepartidorPapaya = true;
+
+  showBtnConfirmar = false;
+  chekAsignacionManual = false;
+  repartidorSelectedManual: any;
 
   listRepartidoresPropios: any;
   repartidorSelected;
@@ -117,10 +122,12 @@ export class CompOrdenDetalleComponent implements OnInit {
         }
         break;
       case 'A':
+        if ( this.isViewOnlyPedidoUrl ) { return; }
         this.closeWindow.emit(true); // manda cerrar dialog
         break;
       case 'D':
         this.orden.quitar = true;
+        if ( this.isViewOnlyPedidoUrl ) { return; }
         this.closeWindow.emit(true); // manda cerrar dialog
         break;
     }
@@ -140,11 +147,20 @@ export class CompOrdenDetalleComponent implements OnInit {
     }, 1500);
   }
 
-
-  saveRepartidor($event): void {
+  selectedRepartidorManual($event): void {
     console.log($event);
+    this.repartidorSelectedManual = $event.value;
+    this.chekAsignacionManual = false;
+    this.showBtnConfirmar = true;
+  }
+
+
+  confirmarAsignacionManual(): void {
+    // console.log($event);
     // const indexR = $event.value;
-    const _repartidor = $event.value; // this.listRepartidoresPropios.filter(r => r.idrepartidor === indexR)[0];
+    // const _repartidor = $event.value; // this.listRepartidoresPropios.filter(r => r.idrepartidor === indexR)[0];
+    const _repartidor = this.repartidorSelectedManual; // this.listRepartidoresPropios.filter(r => r.idrepartidor === indexR)[0];
+
     this.orden.idrepartidor = _repartidor.idrepartidor;
     this.orden.nom_repartidor = _repartidor.nombre;
     this.orden.ap_repartidor = _repartidor.apellido;
@@ -152,6 +168,8 @@ export class CompOrdenDetalleComponent implements OnInit {
 
     this.listenService.setPedidoModificado(this.orden);
     this.pedidoComercioService.setRepartidorToPedido(_repartidor.idrepartidor, this.orden);
+
+    this.chekAsignacionManual = true;
 
   }
 
@@ -192,9 +210,19 @@ export class CompOrdenDetalleComponent implements OnInit {
     });
   }
 
+  callPhone() {
+    window.open(`tel:${this.orden.json_datos_delivery.p_header.arrDatosDelivery.telefono}`);
+  }
+
+  redirectWhatsApp() {
+    const _link = `https://api.whatsapp.com/send?phone=51${this.orden.json_datos_delivery.p_header.arrDatosDelivery.telefono}`;
+    window.open(_link, '_blank');
+  }
+
 
   cerrarDetalles(val: boolean) {
     if ( val ) {
+      if ( this.isViewOnlyPedidoUrl ) { return; }
       this.closeWindow.emit(val);
     }
   }

@@ -45,7 +45,8 @@
                         <div class="c-header fs-13 p-3 border-bottom"
                             [ngClass]="{'verde': item.color === 'v', 'amarillo': item.color === 'a', 'rojo': item.color === 'r', 'programado': item.color === 'p'}">
                             <div class="text-left">
-                                <p class="fw-600 fs-15">#{{item.idpedido}}</p>                                
+                                <p class="fw-600 fs-15">#{{item.idpedido}}</p>
+                                <p style="font-size: 14px !important;" class="badge badge-success" *ngIf="item?.json_datos_delivery?.p_header?.isCliente === 1">APP</p>                                
                             </div>
                             <div class="text-center">
                                 

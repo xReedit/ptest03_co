@@ -30,7 +30,8 @@
               "./node_modules/css-star-rating/css/star-rating.css"              
             ],
             "scripts": [
-            ]
+            ],
+            "crossOrigin": "use-credentials"
           },
           "configurations": {
             "production": {

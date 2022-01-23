@@ -9,6 +9,7 @@ import { CoreModule } from './core/core.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { GlobalErrorHandler } from './shared/services/error.global.handler';
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 
 @NgModule({
@@ -25,7 +26,10 @@ import { GlobalErrorHandler } from './shared/services/error.global.handler';
     CoreModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [{provide: ErrorHandler, useClass: GlobalErrorHandler}],
+  providers: [
+    {provide: ErrorHandler, useClass: GlobalErrorHandler},
+    Location, {provide: LocationStrategy, useClass: PathLocationStrategy} // 22012022 eliminar el #
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

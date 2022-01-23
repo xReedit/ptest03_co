@@ -63,6 +63,21 @@ export class UtilitariosService {
       // return this.xCeroIzq(horas, 2) + ':' + this.xCeroIzq(minutos, 2) + ':' + this.xCeroIzq(segundos, 2);
       }
 
+    xTiempoTranscurrido_min(h2: string) {
+      const currentTime = new Date();
+      const timeGet = new Date(h2);
+
+      return (<number><unknown>currentTime - <number><unknown>timeGet) / (1000 * 60);
+    }
+
+
+    xTiempoTranscurrido_seg(h2: string) {
+      const currentTime = new Date();
+      const timeGet = new Date(h2);
+
+      return ((<number><unknown>currentTime - <number><unknown>timeGet) / 1000 % 60);
+    }
+
 
   xDevolverHora(): any {
     const d = new Date();

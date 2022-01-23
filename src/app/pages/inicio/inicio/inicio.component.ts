@@ -4,6 +4,7 @@ import { VerifyAuthClientService } from 'src/app/shared/services/verify-auth-cli
 import { SocketClientModel } from 'src/app/modelos/socket.client.model';
 import { Router } from '@angular/router';
 import { NotificacionPushService } from 'src/app/shared/services/notificacion-push.service';
+import { UtilitariosService } from 'src/app/shared/services/utilitarios.service';
 // import { take } from 'rxjs/internal/operators/take';
 // import { ListenStatusService } from 'src/app/shared/services/listen-status.service';
 
@@ -24,12 +25,26 @@ export class InicioComponent implements OnInit, OnDestroy {
   constructor(
     private verifyClientService: VerifyAuthClientService,
     private router: Router,
+    private utilService: UtilitariosService,
     // private webSocketService: WebsocketService
     ) { }
 
   ngOnInit() {
     this.nombreClientSocket = '';
     screen.orientation.unlock();
+
+    // chequear si hay ultimo pedido por ver
+    const timeLastPedido = localStorage.getItem('sys::time-lp');
+    if (timeLastPedido ) {
+      const timeTransucrridos = this.utilService.xTiempoTranscurrido_seg(timeLastPedido);
+      if ( timeTransucrridos < 5 ) {
+        localStorage.removeItem('sys::time-lp');
+        localStorage.removeItem('sys::url-lp');
+        history.back();
+        return;
+      }
+    }
+
 
     // setTimeout(() => {
       this.loadInit();
@@ -84,6 +99,10 @@ export class InicioComponent implements OnInit, OnDestroy {
       this.verifyClientService.setIsDelivery(true);
       this.router.navigate(['/login-client']);
     }
+  }
+
+  showRegistrarComercio() {
+    this.router.navigate(['/registro-comercio']);
   }
 
 }

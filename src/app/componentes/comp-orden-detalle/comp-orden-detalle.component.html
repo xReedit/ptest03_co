@@ -19,10 +19,21 @@
                     <p><i class="fa fa-motorcycle" aria-hidden="true"></i> Repartidor: {{ nomRepartidor || 'No asignado' }}</p>
                     <ng-container *ngIf="isComercioPropioRepartidor && orden.flag_solicita_repartidor_papaya !== 1; else elseTemplateNoRepartidores">
                         <mat-form-field *ngIf="orden.pwa_delivery_status !== '4'"> 
-                            <mat-select [(value)]="repartidorSelected" (selectionChange)="saveRepartidor($event)">
+                            <mat-select [(value)]="repartidorSelected" (selectionChange)="selectedRepartidorManual($event)">
                               <mat-option *ngFor="let item of listRepartidoresPropios" [value]="item">{{ item.nombre }}</mat-option>                          
                             </mat-select>
                           </mat-form-field>
+
+                          <!-- <button class="btn btn-sm btn-warning" *ngIf="showBtnConfirmar" (click)="saveRepartidor()">Confirmar</button> -->
+
+                          <div *ngIf="showBtnConfirmar">
+                            <ng-container *ngIf="chekAsignacionManual; else elseTemplateAsignacionManual">
+                                <i class="text-success fa fa-check fa-2x"></i>
+                            </ng-container>
+                            <ng-template #elseTemplateAsignacionManual>                    
+                                <button class="btn btn-sm btn-warning" (click)="confirmarAsignacionManual()">Confirmar Asignacion</button>
+                            </ng-template>                
+                        </div>
                     </ng-container>
                     <ng-template #elseTemplateNoRepartidores>                                        
                         <p *ngIf="nomRepartidor"><i class="fa fa-phone" aria-hidden="true"></i> {{ orden.telefono_repartidor }} </p>
@@ -49,7 +60,7 @@
             </div>
 
             <!-- boton cerrar -->
-            <div>
+            <div *ngIf="!isViewOnlyPedidoUrl">
                 <button type="button" class="btn btn-secondary" mat-dialog-close>
                     <i class="fa fa-close"></i>                
                 </button>
@@ -64,8 +75,14 @@
             <p><i class="fa fa-map-marker"></i>  {{orden.json_datos_delivery.p_header.arrDatosDelivery.direccion}}</p>
             <p><i class="fa fa-map-marker"></i>  {{orden.json_datos_delivery.p_header.arrDatosDelivery.referencia}}</p>
             <p><i class="fa fa-phone"></i> {{ orden.json_datos_delivery.p_header.arrDatosDelivery.telefono }}</p>
+            <hr>
+            <div class="row text-center">
+                <div matRipple class="col-6 border-right text-info" (click)="callPhone()"><i class="fa fa-phone" aria-hidden="true"></i> LLamar</div>
+                <div matRipple class="col-6 text-info" (click)="redirectWhatsApp()"><i class="fa fa-commenting-o" aria-hidden="true"></i> Enviar Mensaje</div>
+            </div>
+            <hr>
 
-            <!-- metodo de pago -->
+            <!-- metodo de pago -->            
             <p class="fw-600 badge" [ngClass]="{'badge-primary': orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 3, 'badge-info': orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 2, 'badge-secondary': orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.idtipo_pago === 1}">
                 <span class="fs-15">{{orden.json_datos_delivery.p_header.arrDatosDelivery.metodoPago.descripcion | titlecase }} </span>
 
@@ -84,7 +101,7 @@
             <p><strong>{{orden.json_datos_delivery.p_header.arrDatosDelivery.tipoComprobante.descripcion}} </strong> {{descripcionDetalleFacturacion}} </p>            
         </div>
 
-        <div class="fs-13 text-right" *ngIf="isFacturacionActivo">
+        <!-- <div class="fs-13 text-right" *ngIf="isFacturacionActivo">
             <div class="text-right">
                 <ng-container *ngIf="orden.pwa_facturado === 0; else elseTemplateFacturado">
                     <button class="btn btn-success" (click)="goFacturar()">
@@ -96,7 +113,7 @@
                     <i *ngIf="loaderFacturacion" class="fa fa-spinner fa-spin fa-2x fa-fw"></i>
                 </ng-template>                       
             </div>
-        </div>
+        </div> -->
 
     </div>
     <hr>

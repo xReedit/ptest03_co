@@ -29,18 +29,19 @@
               <br>
               <div>      
                 <img src="assets/images/papaya_text-2.png" width="190px">
-                <p>Comercio <span class="fs-12">v.1c</span></p>
+                <p>Comercio <span class="fs-12">v.1e</span></p>
               </div>
             </div>
             
             <!-- opciones -->
             <div class="text-center animated fadeIn" *ngIf="shouViewOption===0">
-              <p class="text-secondary">Registra tu negocio para llegar a más personas.</p>
-              <button mat-flat-button color="accent" (click)="shouViewOption=2;"><span class="fs-18 fw-100">Registrar mi negocio</span></button>
+              <p class="text-secondary">Plataforma de pedidos.</p>
+              <br>
+              <button mat-flat-button color="accent" (click)="shouViewOption=1;"><span class="fs-18 fw-100">Ingresar</span></button>
 
-              <hr>
+              <!-- <hr> -->
 
-              <button mat-button color="primary" (click)="shouViewOption=1;">Ingresar</button>
+              <!-- <button mat-button color="primary" (click)="showRegistrarComercio()">registrar comercio</button> -->
             </div>
 
             <ng-container *ngIf="shouViewOption===1">

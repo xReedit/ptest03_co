@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "startup": "ng build --prod && http-server -p 8082  -c-1 ./dist/pwa-app-pedido",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

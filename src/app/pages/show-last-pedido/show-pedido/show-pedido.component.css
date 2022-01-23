@@ -1,0 +1,15 @@
+.div-center-msj {
+    height: 90vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-evenly;
+}
+
+.div-label-msj {
+    background: lightgrey;
+    padding: 20px;
+    border-radius: 5px;
+}

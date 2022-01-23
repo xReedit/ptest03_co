@@ -7,8 +7,12 @@
   <meta http-equiv="Content-Language" content="es" />
   <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="msapplication-tap-highlight" content="no">
+  <!-- <meta name="msapplication-tap-highlight" content="no"> -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- <link rel="manifest" href="manifest.webmanifest"> -->
+
+  <base href="/">
   
   <link rel="stylesheet" href="assets/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="assets/css/util.css">
@@ -48,16 +52,18 @@
   <!-- <meta name="apple-mobile-web-app-title" content="Papaya Restobar"> -->
 
   <title>Papaya Comercio</title>
-  <base href="./">
+  
+  <!-- <script>document.write('<base href="' + document.location + '" />');</script> -->
 </head>
 <body>  
   <!-- <script type="text/javascript" src="assets/js/sw-push.js"></script> -->
   <!-- <script type="text/javascript" src="assets/js/pwa-i.js"></script> -->
   <!-- <script type="text/javascript" src="assets/js/jquery.js"></script> -->
 
-  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAknWQFyVH1RpR2OAL0vRTHTapaIpfKSqo&libraries=places" type="text/javascript"></script> -->
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAknWQFyVH1RpR2OAL0vRTHTapaIpfKSqo&libraries=places" async defer></script>
+  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAknWQFyVH1RpR2OAL0vRTHTapaIpfKSqo&libraries=places" type="text/javascript"></script> -->  
   
   <app-root></app-root>  
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAknWQFyVH1RpR2OAL0vRTHTapaIpfKSqo&libraries=places" async defer></script>
 </body>
 </html>
